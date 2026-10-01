@@ -351,7 +351,7 @@ export type ErrorCode =
   - Criar aba do próximo ano (copia o layout, aplica fórmulas, estende recorrências e faturas). *A fazer.*
   - **Migração** (seção 9): registrar saldos atuais (aba `Validação`) · gerar aba `Migração` · importar aba `Migração` · relatório de validação.
 - **Trava da planilha real:** os comandos que escrevem recusam a planilha real enquanto a propriedade do script `PERMITIR_PLANILHA_REAL` não for `sim` (criada só na virada da Fase 2).
-- **Fórmulas:** geradas por código em sintaxe en-US (`setFormula`), usando `XLOOKUP`, `LET` e `MAP`; colunas referenciadas pelo cabeçalho atual. Excluído = critério `"<>TRUE"`, para linhas manuais com `excluido` vazio contarem.
+- **Fórmulas:** geradas por código em sintaxe en-US e traduzidas no separador ao gravar: `setFormula` interpreta na localidade da planilha (em pt-BR, `=SUM(1,2)` vira 1,2; nomes de função em inglês são aceitos). Usam `XLOOKUP`, `LET` e `MAP`; colunas referenciadas pelo cabeçalho atual. Excluído = critério `"<>TRUE"`, para linhas manuais com `excluido` vazio contarem.
 - **Tokens:** um por pessoa, em Propriedades do Script (`TOKENS` = `{ "<token>": "Murilo", "<token>": "Thays" }`). Nunca no código. Comparação em tempo constante. Revogar = remover a entrada.
 - **Concorrência:** `LockService.getScriptLock()` em toda escrita e na atribuição de `id` a linhas manuais.
 - **Validação:** valor inteiro > 0 e ≤ `Config.valor_maximo`; listas fechadas para `tipo`, `estorna`, `categoria`, `meio`, `cartao`, `quem`, `status`; data dentro de ±1 ano (parcelas e recorrências podem ir até o horizonte); descrição ≤ 80.

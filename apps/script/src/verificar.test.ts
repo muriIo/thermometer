@@ -22,6 +22,12 @@ describe('conferirFormula', () => {
     expect(conferirFormula('x', '', '')).toEqual([]);
   });
 
+  it('aceita a fórmula guardada na sintaxe pt-BR', () => {
+    expect(
+      conferirFormula('x', esperada, "=SUMIFS('Faturas'!G:G;'Faturas'!F:F;DATE(2026;11;5))"),
+    ).toEqual([]);
+  });
+
   it('normaliza aspas, espaços e caixa', () => {
     expect(normalizarFormula(`= sum('A b'!C:C)`)).toBe('=SUM(AB!C:C)');
   });

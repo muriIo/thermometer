@@ -20,14 +20,21 @@ import {
   criarAba,
   ler,
   letrasAtuais,
+  planilha,
   proteger,
   removerProtecoes,
   TODAS_AS_ABAS,
 } from './planilha';
+import { localizarFormula, separadorDaLocalidade } from './sintaxe';
 import { letraDaColuna } from './tabela';
 import { conferirFaturaIds, conferirFormula, type Divergencia } from './verificar';
 
 const MAXIMO_NO_ALERTA = 30;
+
+/** Fórmula en-US → sintaxe da localidade desta planilha (ver sintaxe.ts). */
+function local(formula: string): string {
+  return localizarFormula(formula, separadorDaLocalidade(planilha().getSpreadsheetLocale()));
+}
 
 export function criarMenu(): void {
   SpreadsheetApp.getUi()
@@ -58,7 +65,7 @@ export function prepararAbas(): void {
       removerProtecoes(destino);
       for (const coluna of def.calculadas) {
         const indice = (cabecalho(nome) ?? []).indexOf(coluna) + 1;
-        destino.getRange(1, indice).setFormula(formulaCalculada(nome, coluna, letras));
+        destino.getRange(1, indice).setFormula(local(formulaCalculada(nome, coluna, letras)));
         proteger(destino.getRange(1, indice, destino.getMaxRows(), 1));
       }
     }
@@ -125,7 +132,7 @@ export function aplicarFormulas(): void {
           dias.length,
           3,
         );
-        intervalo.clearContent().setFormulas(formulas);
+        intervalo.clearContent().setFormulas(formulas.map((linha) => linha.map(local)));
         proteger(intervalo);
       }
     }

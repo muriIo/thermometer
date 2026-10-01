@@ -3,14 +3,16 @@
  * `fatura_id` tem de dar o mesmo que `mesDaFatura` em toda linha.
  */
 import { type CicloDoCartao, faturaId, mesDaFatura } from '@termometro/dominio';
+import { localizarFormula } from './sintaxe';
 import { lerBooleano, lerData, lerTexto, type Tabela } from './tabela';
 
 /**
  * O Sheets reescreve a fórmula gravada (tira aspas desnecessárias do nome da
- * aba, muda espaços e caixa). A comparação ignora essas diferenças.
+ * aba, muda espaços e caixa) e a guarda na sintaxe da localidade (`;` em
+ * pt-BR). A comparação ignora essas diferenças.
  */
 export function normalizarFormula(formula: string): string {
-  return formula.replace(/'/g, '').replace(/\s+/g, '').toUpperCase();
+  return localizarFormula(formula, ';').replace(/'/g, '').replace(/\s+/g, '').toUpperCase();
 }
 
 export type Divergencia = { readonly onde: string; readonly problema: string };

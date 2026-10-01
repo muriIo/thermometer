@@ -1,7 +1,7 @@
 /**
  * Fórmulas da planilha, montadas por código e nunca copiadas à mão
- * (docs/engenharia.md, 3). Sintaxe en-US, que é a que `setFormula` aceita
- * em qualquer localidade: nomes em inglês, `,` entre argumentos.
+ * (docs/engenharia.md, 3). Sintaxe en-US (nomes em inglês, `,` entre
+ * argumentos); `sintaxe.ts` traduz o separador para a localidade ao gravar.
  */
 import { type DataISO, diaDoMes, mesDe, mesISO } from '@termometro/dominio';
 import { ABAS, type NomeAba } from './esquema';
