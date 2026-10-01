@@ -27,6 +27,17 @@ export function lerTabela(valores: readonly (readonly unknown[])[]): Tabela {
   return { cabecalho, registros };
 }
 
+const CABECALHO_CALCULADO = /^=\s*\{\s*"([^"]+)"\s*[;\\,]/;
+
+/**
+ * Nome de uma coluna pelo valor da célula do cabeçalho. Coluna ƒ cuja fórmula
+ * `={"nome";…}` está em erro mostra `#ERROR!`; o nome sai da própria fórmula,
+ * para o script não achar que a coluna sumiu (e criar outra).
+ */
+export function nomeDoCabecalho(valor: unknown, formula: string): string {
+  return CABECALHO_CALCULADO.exec(formula)?.[1] ?? String(valor ?? '').trim();
+}
+
 /** Faixa contínua de colunas (0-based, `fim` exclusivo) que o script pode escrever. */
 export type Segmento = { readonly inicio: number; readonly fim: number };
 

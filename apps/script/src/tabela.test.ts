@@ -6,6 +6,7 @@ import {
   lerData,
   lerTabela,
   letraDaColuna,
+  nomeDoCabecalho,
   segmentosGravaveis,
   valoresDoSegmento,
 } from './tabela';
@@ -27,6 +28,21 @@ describe('lerTabela', () => {
 
   it('aba vazia não tem registros', () => {
     expect(lerTabela([])).toEqual({ cabecalho: [], registros: [] });
+  });
+});
+
+describe('nomeDoCabecalho', () => {
+  it('usa o valor da célula em colunas comuns', () => {
+    expect(nomeDoCabecalho(' valor ', '')).toBe('valor');
+  });
+
+  it('coluna ƒ com fórmula em erro ainda é reconhecida pelo nome', () => {
+    expect(nomeDoCabecalho('#ERROR!', '={"fatura_id";ARRAYFORMULA(1)}')).toBe('fatura_id');
+    expect(nomeDoCabecalho('#REF!', '={"total"\\MAP(A2:A,LAMBDA(x,x))}')).toBe('total');
+  });
+
+  it('outras fórmulas não mudam o nome', () => {
+    expect(nomeDoCabecalho(3, '=1+2')).toBe('3');
   });
 });
 

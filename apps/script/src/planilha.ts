@@ -4,6 +4,7 @@ import type { Letras } from './formulas';
 import {
   lerTabela,
   letraDaColuna,
+  nomeDoCabecalho,
   segmentosGravaveis,
   type Tabela,
   valoresDoSegmento,
@@ -33,11 +34,10 @@ export function cabecalho(nome: string): string[] | null {
   if (!encontrada) return null;
   const colunas = encontrada.getLastColumn();
   if (colunas === 0) return [];
-  return (
-    encontrada
-      .getRange(1, 1, 1, colunas)
-      .getValues()[0]
-      ?.map((celula) => String(celula).trim()) ?? []
+  const intervalo = encontrada.getRange(1, 1, 1, colunas);
+  const formulas = intervalo.getFormulas()[0] ?? [];
+  return (intervalo.getValues()[0] ?? []).map((valor, i) =>
+    nomeDoCabecalho(valor, formulas[i] ?? ''),
   );
 }
 
@@ -45,7 +45,8 @@ export type Lida = { readonly tabela: Tabela; readonly valores: unknown[][] };
 
 export function ler(nome: NomeAba): Lida {
   const valores = abaObrigatoria(nome).getDataRange().getValues();
-  return { tabela: lerTabela(valores), valores };
+  // O cabeçalho vem de `cabecalho`, que reconhece colunas ƒ mesmo com a fórmula em erro.
+  return { tabela: lerTabela([cabecalho(nome) ?? [], ...valores.slice(1)]), valores };
 }
 
 export function letrasAtuais(): Letras {
