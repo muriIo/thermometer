@@ -7,7 +7,7 @@ Como manter a base de código sustentável. Vale para pessoas e agentes. O CI ve
 | Ferramenta | Papel | Onde roda |
 |---|---|---|
 | **Biome** | Lint + formatação de TS/JS/JSON. Um `biome.json` na raiz. Sem ESLint/Prettier. | editor, pre-commit, CI (`biome ci`) |
-| **TypeScript** | `strict`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`, `noImplicitOverride`. `tsconfig.base.json` na raiz, estendido por pacote. | editor, pre-push, CI |
+| **TypeScript** 6.0.x | Fixado em 6.0 porque o Angular 22 exige `>=6.0 <6.1`; uma versão só no monorepo. `strict`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`, `noImplicitOverride`. `tsconfig.base.json` na raiz, estendido por pacote. | editor, pre-push, CI |
 | **dependency-cruiser** | Garante as fronteiras de camada (seção 2). | CI |
 | **jscpd** | Detecta duplicação de código (limite inicial: 1% por pacote, blocos ≥ 8 linhas). | CI |
 | **knip** | Exports, arquivos e dependências não usados. | CI |

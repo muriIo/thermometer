@@ -1,0 +1,32 @@
+{
+  "name": "termometro",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.8.1",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "format": "biome check --write .",
+    "lint": "biome ci .",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "deps": "depcruise packages apps",
+    "dup": "jscpd",
+    "knip": "knip",
+    "verify": "pnpm lint && pnpm typecheck && pnpm test && pnpm deps && pnpm dup && pnpm knip"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.15",
+    "@commitlint/cli": "21.2.3",
+    "@commitlint/config-conventional": "21.2.3",
+    "@types/node": "24.19.0",
+    "@vitest/coverage-v8": "5.0.3",
+    "dependency-cruiser": "18.5.0",
+    "jscpd": "5.4.0",
+    "knip": "6.39.0",
+    "lefthook": "2.1.16",
+    "typescript": "6.0.3",
+    "vitest": "5.0.3"
+  }
+}
