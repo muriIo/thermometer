@@ -194,7 +194,7 @@ Fatura real diferente da soma (juros, anuidade, item não lançado): lançar um 
 | `id`, `descricao`, `tipo`, `estorna`, `valor`, `categoria`, `quem`, `meio`, `cartao` | Como em Lançamentos. |
 | `dia` | 1–31. Dia que não existe no mês = último dia do mês. |
 | `inicio`, `fim` | `fim` vazio = sem fim (até o horizonte). |
-| `ativo` | |
+| `ativo` | Vazio conta como ativa; só `FALSE` desliga. Regra inválida é ignorada com aviso. |
 
 Editar uma regra "daqui para a frente" regenera só as linhas **futuras e ainda `previsto`** daquela regra. Linhas confirmadas nunca mudam. Detalhes (`planejarRecorrencia` em `packages/dominio`):
 
@@ -207,7 +207,7 @@ No MVP, recorrências são criadas e editadas só pela planilha (menu "Termômet
 
 **`Previsão`** — `mes` (AAAA-MM) → `diario_por_dia` (R$). Previsão de **consumo** do Diário. Editável na planilha (e em Ajustes no app, fase 5).
 
-**`Config`** — chave/valor: `valor_maximo` (R$ 20.000), `confirmar_acima_diario` (R$ 2.000), `horizonte` (fim do ano seguinte).
+**`Config`** — chave/valor: `valor_maximo` (R$ 20.000), `confirmar_acima_diario` (R$ 2.000), `horizonte` (fim do ano seguinte; gravado pelo menu ao gerar), `data_corte` (um dia 24; a partir dele os blocos viram fórmula).
 
 ### 5.3 Categorias
 
@@ -344,11 +344,15 @@ export type ErrorCode =
 - `/** @OnlyCurrentDoc */` no topo.
 - **Web App:** executar como o dono, acesso "qualquer pessoa" (a autenticação é o token).
 - **Menu "Termômetro"** na planilha:
-  - Gerar recorrências e faturas até o horizonte.
-  - Criar aba do próximo ano (copia o layout, aplica fórmulas, estende recorrências e faturas).
-  - Migração: gerar aba `Migração` / importar aba `Migração` (seção 9).
-  - Verificar fórmulas dos blocos (lista células que perderam a fórmula).
-  - Relatório de validação (seção 9).
+  - **Preparar abas:** cria as abas/colunas que faltam (nunca remove nem reordena) e regrava as fórmulas ƒ, protegidas com aviso.
+  - **Gerar recorrências e faturas** até o horizonte (faturas: do mês atual até a que recebe compras do último dia do horizonte).
+  - **Aplicar fórmulas a partir do corte** (`Config.data_corte`): Entrada/Saída/Diário de cada dia viram fórmula; dia inexistente fica vazio.
+  - **Verificar fórmulas:** células ƒ e dos blocos que perderam ou mudaram a fórmula, e todo `fatura_id` comparado com `mesDaFatura` do domínio.
+  - Criar aba do próximo ano (copia o layout, aplica fórmulas, estende recorrências e faturas). *A fazer.*
+  - Migração: gerar aba `Migração` / importar aba `Migração` (seção 9). *A fazer.*
+  - Relatório de validação (seção 9). *A fazer.*
+- **Trava da planilha real:** os comandos que escrevem recusam a planilha real enquanto a propriedade do script `PERMITIR_PLANILHA_REAL` não for `sim` (criada só na virada da Fase 2).
+- **Fórmulas:** geradas por código em sintaxe en-US (`setFormula`), usando `XLOOKUP`, `LET` e `MAP`; colunas referenciadas pelo cabeçalho atual. Excluído = critério `"<>TRUE"`, para linhas manuais com `excluido` vazio contarem.
 - **Tokens:** um por pessoa, em Propriedades do Script (`TOKENS` = `{ "<token>": "Murilo", "<token>": "Thays" }`). Nunca no código. Comparação em tempo constante. Revogar = remover a entrada.
 - **Concorrência:** `LockService.getScriptLock()` em toda escrita e na atribuição de `id` a linhas manuais.
 - **Validação:** valor inteiro > 0 e ≤ `Config.valor_maximo`; listas fechadas para `tipo`, `estorna`, `categoria`, `meio`, `cartao`, `quem`, `status`; data dentro de ±1 ano (parcelas e recorrências podem ir até o horizonte); descrição ≤ 80.

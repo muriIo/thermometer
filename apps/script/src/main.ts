@@ -2,7 +2,20 @@
 import { rotear } from './rotear';
 import { lerTokens } from './tokens';
 
+export {
+  aplicarFormulas,
+  gerarRecorrenciasEFaturas,
+  prepararAbas,
+  verificarFormulas,
+} from './menu';
+
+import { criarMenu } from './menu';
+
 declare const __VERSAO_SCRIPT__: string;
+
+export function onOpen(): void {
+  criarMenu();
+}
 
 export function doPost(
   evento: GoogleAppsScript.Events.DoPost,

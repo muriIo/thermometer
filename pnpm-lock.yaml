@@ -205,6 +205,9 @@ importers:
       '@termometro/contract':
         specifier: workspace:*
         version: link:../../packages/contract
+      '@termometro/dominio':
+        specifier: workspace:*
+        version: link:../../packages/dominio
     devDependencies:
       '@google/clasp':
         specifier: 3.4.1
