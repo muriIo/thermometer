@@ -11,6 +11,10 @@ const PONTOS_DE_ENTRADA = [
   'gerarRecorrenciasEFaturas',
   'aplicarFormulas',
   'verificarFormulas',
+  'registrarSaldos',
+  'gerarAbaMigracao',
+  'importarMigracao',
+  'relatorioValidacao',
 ];
 const { version } = JSON.parse(await readFile(new URL('./package.json', import.meta.url), 'utf8'));
 

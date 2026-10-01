@@ -1,7 +1,15 @@
 export type { Centavos } from './centavos';
 export { centavos, deReais, formatarReais, paraReais, somar } from './centavos';
 export type { DataISO, MesISO } from './datas';
-export { dataISO, diaDoMes, mesDe, mesISO, somarMeses, somarMesesAoMes } from './datas';
+export {
+  dataISO,
+  diaDoMes,
+  diasNoMes,
+  mesDe,
+  mesISO,
+  somarMeses,
+  somarMesesAoMes,
+} from './datas';
 export type { CicloDoCartao, Fatura } from './fatura';
 export { fatura, faturaId, faturasEntre, mesDaFatura } from './fatura';
 export type { Meio, Status, Tipo } from './lancamento';

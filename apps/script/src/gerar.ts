@@ -10,29 +10,17 @@ import {
   faturasEntre,
   type LinhaExistente,
   type LinhaRecorrente,
-  MEIOS,
   mesDaFatura,
   mesDe,
   paraReais,
   planejarRecorrencia,
   type Recorrencia,
   STATUS,
-  TIPOS,
 } from '@termometro/dominio';
+import { type CamposDeNegocio, lerCampos, problemaNosCampos } from './campos';
 import { escreverData, lerBooleano, lerData, lerTexto, type Registro, type Tabela } from './tabela';
 
-/** Campos de negócio que uma regra copia para as linhas (nomes do domínio). */
-type CamposDaRegra = {
-  readonly descricao: string;
-  readonly tipo: string;
-  readonly estorna: string;
-  readonly categoria: string;
-  readonly quem: string;
-  readonly meio: string;
-  readonly cartao: string;
-};
-
-type Regra = Recorrencia & CamposDaRegra;
+type Regra = Recorrencia & CamposDeNegocio;
 
 export type PlanoDeGeracao = {
   /** Linhas novas de Lançamentos, por nome de cabeçalho. */
@@ -134,32 +122,6 @@ function lerRegra(id: string, { dados }: Registro): Regra | string {
   };
 }
 
-function lerCampos(dados: Readonly<Record<string, unknown>>): CamposDaRegra {
-  return {
-    descricao: lerTexto(dados.descricao),
-    tipo: lerTexto(dados.tipo),
-    estorna: lerTexto(dados.estorna),
-    categoria: lerTexto(dados.categoria),
-    quem: lerTexto(dados.quem),
-    meio: lerTexto(dados.meio) || 'avista',
-    cartao: lerTexto(dados.cartao),
-  };
-}
-
-function problemaNosCampos(campos: CamposDaRegra): string | null {
-  if (!incluido(TIPOS, campos.tipo)) return `tipo inválido (${campos.tipo})`;
-  if (campos.tipo === 'estorno' && !['diario', 'saida'].includes(campos.estorna)) {
-    return 'estorno sem "estorna" (diario ou saida)';
-  }
-  if (!incluido(MEIOS, campos.meio)) return `meio inválido (${campos.meio})`;
-  if (campos.meio === 'cartao' && !campos.cartao) return 'meio cartão sem cartão';
-  return null;
-}
-
-function incluido(lista: readonly string[], valor: string): boolean {
-  return lista.includes(valor);
-}
-
 type Existente = LinhaExistente & { readonly linha: number };
 
 /** Linhas não excluídas de Lançamentos com `recorrencia_id`, nos nomes do domínio. */
@@ -169,7 +131,12 @@ function linhasPorRegra(lancamentos: Tabela): Map<string, Existente[]> {
     const recorrenciaId = lerTexto(dados.recorrencia_id);
     const data = lerData(dados.data);
     const status = lerTexto(dados.status);
-    if (!recorrenciaId || !data || lerBooleano(dados.excluido) || !incluido(STATUS, status)) {
+    if (
+      !recorrenciaId ||
+      !data ||
+      lerBooleano(dados.excluido) ||
+      !(STATUS as readonly string[]).includes(status)
+    ) {
       continue;
     }
     const existente: Existente = {

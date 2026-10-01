@@ -1,5 +1,6 @@
 // Comandos do menu "Termômetro" (PROJECT.md, 7). Orquestram I/O; a lógica é testada à parte.
-import { type DataISO, dataISO, horizonte } from '@termometro/dominio';
+import { type DataISO, horizonte } from '@termometro/dominio';
+import { anosAPartirDe, avisar, comLock, dataDeCorte, dataDeHoje, gravarConfig } from './contexto';
 import { ABAS, definicao, planejarEstrutura } from './esquema';
 import {
   celulasDoDia,
@@ -11,7 +12,6 @@ import {
 } from './formulas';
 import { planejarGeracao } from './gerar';
 import {
-  aba,
   abaObrigatoria,
   acrescentar,
   acrescentarColunas,
@@ -20,16 +20,13 @@ import {
   criarAba,
   ler,
   letrasAtuais,
-  planilha,
   proteger,
   removerProtecoes,
   TODAS_AS_ABAS,
 } from './planilha';
-import { podeEscrever } from './seguranca';
-import { lerData, lerTexto, letraDaColuna } from './tabela';
+import { letraDaColuna } from './tabela';
 import { conferirFaturaIds, conferirFormula, type Divergencia } from './verificar';
 
-const FUSO = 'America/Sao_Paulo';
 const MAXIMO_NO_ALERTA = 30;
 
 export function criarMenu(): void {
@@ -39,6 +36,11 @@ export function criarMenu(): void {
     .addItem('Gerar recorrências e faturas', 'gerarRecorrenciasEFaturas')
     .addItem('Aplicar fórmulas a partir do corte', 'aplicarFormulas')
     .addItem('Verificar fórmulas', 'verificarFormulas')
+    .addSeparator()
+    .addItem('Migração: registrar saldos atuais', 'registrarSaldos')
+    .addItem('Migração: gerar aba Migração', 'gerarAbaMigracao')
+    .addItem('Migração: importar aba Migração', 'importarMigracao')
+    .addItem('Migração: relatório de validação', 'relatorioValidacao')
     .addToUi();
 }
 
@@ -181,56 +183,6 @@ function verificarBlocos(ano: number, corte: DataISO, letras: Letras): Divergenc
     }
   }
   return divergencias;
-}
-
-function comLock(acao: () => void): void {
-  const permissao = PropertiesService.getScriptProperties().getProperty('PERMITIR_PLANILHA_REAL');
-  if (!podeEscrever(planilha().getId(), permissao)) {
-    avisar('Esta é a planilha real. A escrita está bloqueada até a virada da Fase 2.');
-    return;
-  }
-  const lock = LockService.getScriptLock();
-  lock.waitLock(30_000);
-  try {
-    acao();
-  } finally {
-    lock.releaseLock();
-  }
-}
-
-function avisar(mensagem: string): void {
-  SpreadsheetApp.getUi().alert(mensagem);
-}
-
-function dataDeHoje(): DataISO {
-  return dataISO(Utilities.formatDate(new Date(), FUSO, 'yyyy-MM-dd'));
-}
-
-function config(chave: string): unknown {
-  const linha = ler(ABAS.config).tabela.registros.find(
-    ({ dados }) => lerTexto(dados.chave) === chave,
-  );
-  return linha?.dados.valor;
-}
-
-function gravarConfig(chave: string, valor: DataISO): void {
-  const lida = ler(ABAS.config);
-  const linha = lida.tabela.registros.find(({ dados }) => lerTexto(dados.chave) === chave);
-  if (linha) atualizar(ABAS.config, lida, linha.linha, { valor });
-  else acrescentar(ABAS.config, [{ chave, valor }]);
-}
-
-function dataDeCorte(): DataISO {
-  const corte = lerData(config('data_corte'));
-  if (!corte) throw new Error('Preencha Config!data_corte (um dia 24) antes.');
-  return corte;
-}
-
-/** Anos com aba (2026, 2027…) que têm dias a partir do corte. */
-function anosAPartirDe(corte: DataISO): number[] {
-  const anos: number[] = [];
-  for (let ano = Number(corte.slice(0, 4)); aba(String(ano)); ano++) anos.push(ano);
-  return anos;
 }
 
 function porMes(dias: readonly DiaDoBloco[]): Map<number, DiaDoBloco[]> {

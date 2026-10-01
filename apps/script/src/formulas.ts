@@ -135,10 +135,13 @@ export function formulasDoDia(data: DataISO, letras: Letras): FormulasDoDia {
 export type CelulasDoDia = {
   readonly aba: string;
   readonly mes: number;
+  /** Linha do bloco, 1–31 (pode não existir no mês). */
+  readonly dia: number;
   readonly linha: number;
   readonly entrada: number;
   readonly saida: number;
   readonly diario: number;
+  readonly saldo: number;
 };
 
 /** Bloco de 5 colunas por mês, separados por 1 vazia; dias 1–31 nas linhas 3–33. */
@@ -147,10 +150,12 @@ export function celulasDoDia(ano: number, mes: number, dia: number): CelulasDoDi
   return {
     aba: String(ano),
     mes,
+    dia,
     linha: 2 + dia,
     entrada: data(1),
     saida: data(2),
     diario: data(3),
+    saldo: data(4),
   };
 }
 

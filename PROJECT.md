@@ -349,8 +349,7 @@ export type ErrorCode =
   - **Aplicar fórmulas a partir do corte** (`Config.data_corte`): Entrada/Saída/Diário de cada dia viram fórmula; dia inexistente fica vazio.
   - **Verificar fórmulas:** células ƒ e dos blocos que perderam ou mudaram a fórmula, e todo `fatura_id` comparado com `mesDaFatura` do domínio.
   - Criar aba do próximo ano (copia o layout, aplica fórmulas, estende recorrências e faturas). *A fazer.*
-  - Migração: gerar aba `Migração` / importar aba `Migração` (seção 9). *A fazer.*
-  - Relatório de validação (seção 9). *A fazer.*
+  - **Migração** (seção 9): registrar saldos atuais (aba `Validação`) · gerar aba `Migração` · importar aba `Migração` · relatório de validação.
 - **Trava da planilha real:** os comandos que escrevem recusam a planilha real enquanto a propriedade do script `PERMITIR_PLANILHA_REAL` não for `sim` (criada só na virada da Fase 2).
 - **Fórmulas:** geradas por código em sintaxe en-US (`setFormula`), usando `XLOOKUP`, `LET` e `MAP`; colunas referenciadas pelo cabeçalho atual. Excluído = critério `"<>TRUE"`, para linhas manuais com `excluido` vazio contarem.
 - **Tokens:** um por pessoa, em Propriedades do Script (`TOKENS` = `{ "<token>": "Murilo", "<token>": "Thays" }`). Nunca no código. Comparação em tempo constante. Revogar = remover a entrada.
@@ -430,6 +429,20 @@ Regra: domínio e casos de uso não importam nada do framework de UI. A regra é
 5. Aplicar as fórmulas (5.4) nos dias a partir do corte e proteger as células com aviso.
 6. **Critério de pronto da Fase 1:** o saldo do **fim de cada mês**, de out/2026 a dez/2027, idêntico ao da planilha real centavo por centavo. Diferenças em dias intermediários só podem vir da regra do dia 31; o script gera a lista para conferência.
 7. Na data de corte, repetir na planilha real.
+
+**Ordem no menu "Termômetro"** (Planilha Teste):
+
+1. Preparar abas → preencher `Cartões`, `Config.data_corte` e as regras de `Recorrentes`.
+2. Migração: registrar saldos atuais (fotografa o Saldo de cada dia a partir do mês do corte na aba `Validação`). **Antes de qualquer fórmula.**
+3. Gerar recorrências e faturas.
+4. Migração: gerar aba `Migração`. Regras do script:
+   - Entrada/Saída: uma linha por parcela da fórmula (`=1800+120+250`), pareada com a linha da nota na mesma ordem; aviso quando as quantidades diferem ou a fórmula não é uma soma simples. Parcela negativa vira Estorno da coluna. ✅ na nota → `confirmado`.
+   - Diário: o valor mais comum do mês vira a `Previsão`; o que passa dele num dia vira lançamento `diario`; abaixo dele vem desmarcado (o Diário futuro não tem como descontar).
+   - Dia 31 em mês curto (e 29–31 em fevereiro) vai para o último dia real; no Diário, o valor inteiro vira lançamento.
+   - Item igual (mês, tipo, valor) a um lançamento de recorrência já gerado vem desmarcado; descrição que aparece em 3+ meses ganha o aviso "virar recorrência?".
+5. Revisar a aba `Migração` (desmarcar, corrigir tipo/meio/cartão/categoria; a fatura logo após o corte vira compra no cartão) → Migração: importar (grava o `id` de volta, então reimportar não duplica).
+6. Aplicar fórmulas a partir do corte → Verificar fórmulas.
+7. Migração: relatório de validação — fim de mês (linha do dia 31 de cada bloco) tem de bater; diferença em dia intermediário só é aceita no último dia real de mês curto (regra do dia 31). Rodar **antes** do dia do corte: depois dele, o Diário de dias passados deixa de usar a Previsão.
 
 ---
 

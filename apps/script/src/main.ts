@@ -8,6 +8,12 @@ export {
   prepararAbas,
   verificarFormulas,
 } from './menu';
+export {
+  gerarAbaMigracao,
+  importarMigracao,
+  registrarSaldos,
+  relatorioValidacao,
+} from './menu-migracao';
 
 import { criarMenu } from './menu';
 

@@ -23,10 +23,12 @@ describe('celulasDoDia', () => {
     expect(celulasDoDia(2026, 1, 1)).toEqual({
       aba: '2026',
       mes: 1,
+      dia: 1,
       linha: 3,
       entrada: 2,
       saida: 3,
       diario: 4,
+      saldo: 5,
     });
     // Out BC:BG → Entrada em BD; dia 24 na linha 26.
     const outubro = celulasDoDia(2026, 10, 24);
