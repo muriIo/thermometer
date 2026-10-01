@@ -1,2 +1,10 @@
 export type { Centavos } from './centavos';
 export { centavos, deReais, formatarReais, paraReais, somar } from './centavos';
+export type { DataISO, MesISO } from './datas';
+export { dataISO, diaDoMes, mesDe, mesISO, somarMeses, somarMesesAoMes } from './datas';
+export type { CicloDoCartao, Fatura } from './fatura';
+export { fatura, faturaId, faturasEntre, mesDaFatura } from './fatura';
+export type { Meio, Status } from './lancamento';
+export { MEIOS, STATUS } from './lancamento';
+export type { Parcela, Parcelavel } from './parcelas';
+export { dividirEmParcelas, parcelar } from './parcelas';

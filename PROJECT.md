@@ -179,7 +179,7 @@ Linhas digitadas à mão podem vir sem `id`/`origem`; o script atribui na primei
 | Coluna | Observação |
 |---|---|
 | `id` | `<cartao>-<AAAA-MM>` (mês do fechamento). |
-| `cartao`, `fecha_em`, `vence_em` | Datas do ciclo. |
+| `cartao`, `fecha_em`, `vence_em` | Datas do ciclo. `fecha_em` = dia `fechamento` do mês do `id`; `vence_em` = dia `vencimento` do mesmo mês, ou do mês seguinte se `vencimento ≤ fechamento` (Inter: fecha 24/10, vence 01/11). Dia inexistente = último dia do mês. |
 | `pago_em` | Vazio = não paga. **Data livre**: pagar no dia 25 ou no dia 1, tanto faz. Pagamento é sempre do total, numa data só. |
 | ƒ `data_efetiva` | `pago_em`, ou `vence_em` se vazio. |
 | ƒ `total` | Soma das compras não excluídas da fatura − estornos no cartão. |
