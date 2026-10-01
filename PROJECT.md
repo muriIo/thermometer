@@ -196,7 +196,14 @@ Fatura real diferente da soma (juros, anuidade, item não lançado): lançar um 
 | `inicio`, `fim` | `fim` vazio = sem fim (até o horizonte). |
 | `ativo` | |
 
-Editar uma regra "daqui para a frente" regenera só as linhas **futuras e ainda `previsto`** daquela regra. Linhas confirmadas nunca mudam. No MVP, recorrências são criadas e editadas só pela planilha (menu "Termômetro").
+Editar uma regra "daqui para a frente" regenera só as linhas **futuras e ainda `previsto`** daquela regra. Linhas confirmadas nunca mudam. Detalhes (`planejarRecorrencia` em `packages/dominio`):
+
+- Uma ocorrência por mês por regra; a linha existente é casada pelo **mês**, então mudar o `dia` atualiza a linha mantendo o `id`.
+- "Futura" = data a partir de hoje, inclusive. Mês com linha confirmada, previsto vencido ("a confirmar") ou cuja ocorrência já passou não muda.
+- Previsto futuro num mês que a regra não cobre mais (`fim` antecipado, `ativo = FALSE`) recebe `excluido = TRUE`; repetidos no mesmo mês também.
+- Rodar de novo sem mudança na regra não altera nada.
+
+No MVP, recorrências são criadas e editadas só pela planilha (menu "Termômetro").
 
 **`Previsão`** — `mes` (AAAA-MM) → `diario_por_dia` (R$). Previsão de **consumo** do Diário. Editável na planilha (e em Ajustes no app, fase 5).
 

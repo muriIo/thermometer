@@ -8,3 +8,10 @@ export type { Meio, Status } from './lancamento';
 export { MEIOS, STATUS } from './lancamento';
 export type { Parcela, Parcelavel } from './parcelas';
 export { dividirEmParcelas, parcelar } from './parcelas';
+export type {
+  LinhaExistente,
+  LinhaRecorrente,
+  PlanoDaRecorrencia,
+  Recorrencia,
+} from './recorrencia';
+export { datasDaRecorrencia, horizonte, planejarRecorrencia } from './recorrencia';
