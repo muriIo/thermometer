@@ -1,4 +1,4 @@
-import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
+import { Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
 import {
   Pressable,
   RefreshControl,
@@ -13,6 +13,7 @@ import { centavos, type DataISO, formatarReais } from '@termometro/dominio';
 import { alvos } from '../aplicacao/operacao.ts';
 import type { LancamentoNaTela } from '../aplicacao/projecao.ts';
 import { AjustarPrevisto } from './ajustar-previsto.ts';
+import { Atualizacoes } from './atualizacoes.ts';
 import { CartaoTermometro } from './cartao-termometro.ts';
 import { EstadoDoApp } from './estado-do-app.ts';
 import { dataCurta, dataPorExtenso } from './formatos.ts';
@@ -376,6 +377,8 @@ export class Hoje {
 
   constructor() {
     inject(DestroyRef).onDestroy(() => clearTimeout(this.esconderToast));
+    const atualizacoes = inject(Atualizacoes);
+    effect(() => atualizacoes.ocupado.set(this.lancando() || this.ajustando() !== null));
   }
 
   protected readonly dataDeHoje = computed(() => dataPorExtenso(this.estado().hoje));

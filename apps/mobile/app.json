@@ -19,7 +19,7 @@
     },
     "scheme": "termometro",
     "updates": {
-      "enabled": false
+      "url": "https://u.expo.dev/0a80e20a-6a62-4ed5-bf34-cccf2a5cbfa9"
     },
     "plugins": ["@ng-native/metro/app.plugin.cjs", "expo-sqlite", "expo-secure-store"],
     "ios": {
@@ -30,6 +30,9 @@
         "projectId": "0a80e20a-6a62-4ed5-bf34-cccf2a5cbfa9"
       }
     },
-    "owner": "muriloc"
+    "owner": "muriloc",
+    "runtimeVersion": {
+      "policy": "fingerprint"
+    }
   }
 }

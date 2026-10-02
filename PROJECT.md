@@ -525,7 +525,7 @@ Monorepo privado no GitHub, pnpm workspaces:
 
 - **Git:** branches + PRs (mesmo sozinho), Conventional Commits, `CHANGELOG.md`, tags `vX.Y.Z` iguais à versão do app.
 - **App:** semver; build incrementado pelo EAS (`autoIncrement`, versão remota).
-- **OTA (EAS Update):** JS/templates/estilos por OTA no canal do perfil. Mudanças nativas exigem build novo. `runtimeVersion` impede OTA em binário incompatível.
+- **OTA (EAS Update):** JS/templates/estilos por OTA no canal do perfil. Mudanças nativas exigem build novo. `runtimeVersion` (política `fingerprint`, calculada do que é nativo) impede OTA em binário incompatível.
 - **Contrato:** campo `v`; script aceita atual e anterior.
 - **Apps Script:** deployments versionados (seção 7).
 - **Planilha:** histórico do Google + backup semanal + cópia pré-migração.
@@ -573,7 +573,7 @@ Detalhes em [`docs/engenharia.md`](docs/engenharia.md). Resumo:
 ## 17. Distribuição
 
 - **Agora — Android (Thays e testes):** EAS Build perfil `preview` gerando **APK** com distribuição interna (`apps/mobile/eas.json`; pacote `com.murilocruz.termometro`). A URL do Web App vem da variável `EXPO_PUBLIC_API_URL` do ambiente `preview` do EAS, fora do repositório. Passo a passo no README.
-- **OTA (EAS Update):** ainda não configurado (`updates.enabled: false`); entra com `expo-updates` e `runtimeVersion` antes da semana de uso real, para corrigir JS sem reinstalar o APK.
+- **OTA (EAS Update):** canal `preview` para o APK de teste e `production` para o de produção; `runtimeVersion` pelo fingerprint do nativo. O app aplica o update ao voltar ao primeiro plano, fora da tela Lançar. Como publicar: README.
 - **iOS antes da Fase 6:** o Murilo testa pelo Expo Go (Fase 4).
 - **Depois — iOS (Murilo):** Apple Developer Program (US$ 99/ano), build EAS, TestFlight. Decisão em aberto.
 

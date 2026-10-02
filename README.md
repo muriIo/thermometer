@@ -63,6 +63,18 @@ A cada APK:
 
 O número do build (`versionCode`) sobe sozinho a cada build (`autoIncrement`, versão remota no EAS), então um APK novo instala por cima do anterior sem apagar os dados.
 
+### Update OTA (EAS Update)
+
+Mudança só de JS, template ou estilo vai sem APK novo:
+
+```sh
+eas update --channel preview --environment preview --message "o que mudou"
+```
+
+`--environment preview` é obrigatório: é ele que põe `EXPO_PUBLIC_API_URL` no JS publicado; sem ele o app perde a URL do Web App. O app procura updates ao abrir e ao voltar ao primeiro plano, e reinicia no update na volta seguinte se a tela Lançar não estiver aberta (`apps/mobile/src/ui/atualizacoes.ts`).
+
+O update só chega a APKs com a mesma `runtimeVersion`, calculada pelo fingerprint do que é nativo. Dependência com código nativo, plugin ou campo nativo do `app.json` mudou: o fingerprint muda, o update não chega aos APKs antigos, e é preciso um `eas build` novo. O `eas update` mostra a runtime publicada; a página do build mostra a do APK. APKs feitos antes do `expo-updates` (build 2) não recebem update: instale um APK novo uma vez.
+
 `npx expo-doctor` acusa `expo-modules-core` como dependência peer ausente do `@ng-native/expo`. Com pnpm é falso positivo: o pnpm liga o peer sozinho, e instalar o pacote direto faz o próprio doctor reclamar do contrário (ver `docs/ng-native-feedback.md`).
 
 ## Apps Script
