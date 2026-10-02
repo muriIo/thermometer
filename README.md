@@ -31,6 +31,18 @@ pnpm install                 # também instala os hooks do git (lefthook)
 | `apps/script` | Apps Script em TypeScript (Web App + menu da planilha). |
 | `apps/mobile` | App Angular Native + Expo. Guia para agentes em [`apps/mobile/AGENTS.md`](apps/mobile/AGENTS.md). |
 
+## App no celular (Expo Go)
+
+`pnpm start` dentro de `apps/mobile` e leia o QR code no Expo Go (Android ou iPhone, mesmo Wi-Fi do computador). No iPhone, o Expo Go é o teste de iOS até a Fase 6 (`PROJECT.md`, seção 18).
+
+**WSL2:** com `networkingMode=mirrored` no `.wslconfig`, o Metro já anuncia o IP da rede local, mas o firewall do Hyper-V bloqueia a entrada e o Expo Go dá timeout. Uma vez, num PowerShell como administrador:
+
+```powershell
+New-NetFirewallHyperVRule -Name "Metro-8081" -DisplayName "Metro (Expo) 8081" -Direction Inbound -VMCreatorId '{40E0AC32-46A5-438A-A0B2-2B479E8F2E90}' -Protocol TCP -LocalPorts 8081 -Action Allow
+```
+
+Para conferir, abra `http://<IP do computador>:8081/status` no navegador do celular: deve mostrar `packager-status:running`. Se ainda falhar, verifique a permissão de Rede Local do Expo Go (iOS) e se o Wi-Fi não isola os aparelhos (rede de convidados). Último recurso: `pnpm exec expo start --tunnel`.
+
 ## Apps Script
 
 Só a **Planilha Teste** durante o desenvolvimento. Nunca a real.
