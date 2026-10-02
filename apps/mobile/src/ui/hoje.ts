@@ -19,6 +19,7 @@ import { EstadoDoApp } from './estado-do-app.ts';
 import { dataCurta, dataPorExtenso } from './formatos.ts';
 import { type Lancado, Lancar } from './lancar.ts';
 import { LinhaLancamento } from './linha-lancamento.ts';
+import { VERSAO } from './versao.ts';
 
 /** Quanto tempo o "Desfazer" fica na tela depois de lançar (tela 3). */
 const TEMPO_DO_DESFAZER_MS = 5000;
@@ -134,6 +135,10 @@ type Tom = 'ok' | 'enviando' | 'offline' | 'alerta';
             <text class="vazio">Nenhum lançamento hoje.</text>
           }
         </view>
+
+        @if (versao) {
+          <text class="versao">{{ versao }}</text>
+        }
       </scroll-view>
 
       @if (toast(); as t) {
@@ -299,6 +304,11 @@ type Tom = 'ok' | 'enviando' | 'offline' | 'alerta';
       color: #5b6070;
       padding: 12px 0;
     }
+    .versao {
+      font-size: 12px;
+      color: #8a8f9c;
+      text-align: center;
+    }
     .toast {
       position: absolute;
       left: 16px;
@@ -368,6 +378,7 @@ export class Hoje {
   private readonly dialogs = inject(Dialogs);
   protected readonly estado = this.app.estado;
   protected readonly painel = this.app.painel;
+  protected readonly versao = inject(VERSAO);
 
   protected readonly atualizando = signal(false);
   protected readonly lancando = signal(false);

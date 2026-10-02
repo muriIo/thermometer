@@ -12,8 +12,11 @@ import { NADA_GUARDADO } from '../aplicacao/guardado.ts';
 import { Termometro } from '../aplicacao/termometro.ts';
 import { App } from './app.ts';
 import { TERMOMETRO } from './estado-do-app.ts';
+import { VERSAO } from './versao.ts';
 
-export async function renderizarApp(opcoes: { token?: string | null; online?: boolean } = {}) {
+export async function renderizarApp(
+  opcoes: { token?: string | null; online?: boolean; versao?: string } = {},
+) {
   const api = new ApiFalsa();
   const conectado = signal(opcoes.online ?? true);
   let token = opcoes.token === undefined ? TOKEN_BOM : opcoes.token;
@@ -42,6 +45,7 @@ export async function renderizarApp(opcoes: { token?: string | null; online?: bo
       { provide: Network, useValue: { connected: conectado } },
       { provide: AppState, useValue: { active: signal(true) } },
       { provide: Dialogs, useValue: dialogs },
+      { provide: VERSAO, useValue: opcoes.versao ?? '' },
     ],
   });
   return { api, termometro, conectado, dialogs };
