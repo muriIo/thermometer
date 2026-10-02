@@ -104,3 +104,28 @@ Since `expo` always brings `expo-modules-core`, could the peer be marked optiona
 
 </details>
 
+### 2026-10-02 — `eas init` não acha o config plugin do `@ng-native/metro`
+
+- **Versões:** ng-native 0.3.0 (@ng-native/metro) · Expo SDK 57 · eas-cli 24.9.0 (traz @expo/config-plugins 55.0.7 e 10.1.2)
+- **Tipo:** bug
+- **O que tentei:** `eas init` num app do template, com `"plugins": ["@ng-native/metro"]` no `app.json`, como a documentação manda.
+- **O que esperava:** o EAS avaliar o plugin como o `expo prebuild` avalia.
+- **O que aconteceu:** `Package "@ng-native/metro" does not contain a valid config plugin. Module must export a function from file: …/@ng-native/metro/angular-transform.cjs` e `Error: project:init command failed.` O plugin do pacote está em `app.plugin.cjs`; o resolvedor do SDK 57 procura `app.plugin.{js,cjs,…}`, mas as versões embutidas no eas-cli procuram só `app.plugin.js` e caem no `main` (`angular-transform.cjs`).
+- **Reprodução mínima:** `require('@expo/config-plugins@55/build/utils/plugin-resolver').resolveConfigPluginFunction(raiz, '@ng-native/metro')` lança o erro; com `'@ng-native/metro/app.plugin.cjs'` devolve a função.
+- **Contorno adotado:** `apps/mobile/app.json` referencia `"@ng-native/metro/app.plugin.cjs"`.
+- **Issue upstream:** rascunho abaixo
+
+<details><summary>Rascunho da issue</summary>
+
+**Título:** `@ng-native/metro`: config plugin not found by eas-cli (`app.plugin.cjs` only)
+
+**Descrição:**
+
+With `"plugins": ["@ng-native/metro"]`, `eas init` / `eas build` (eas-cli 24.9.0) fail with "Package "@ng-native/metro" does not contain a valid config plugin. Module must export a function from file: …/angular-transform.cjs".
+
+The plugin ships as `app.plugin.cjs`. Expo SDK 57's resolver accepts `app.plugin.{js,cjs,mjs,ts,…}`, so `expo prebuild` works, but the `@expo/config-plugins` copies bundled in eas-cli (55.0.7 and 10.1.2) only look for `app.plugin.js` and fall back to `main`, which is `angular-transform.cjs`.
+
+Shipping an `app.plugin.js` (`module.exports = require('./app.plugin.cjs')`) would fix it for every resolver. Workaround: reference `@ng-native/metro/app.plugin.cjs` in `app.json`.
+
+</details>
+
