@@ -8,6 +8,7 @@ export {
   prepararAbas,
   verificarFormulas,
 } from './menu';
+export { criarAbaDoProximoAno } from './menu-ano';
 export {
   gerarAbaMigracao,
   importarMigracao,

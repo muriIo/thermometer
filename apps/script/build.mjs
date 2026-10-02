@@ -11,6 +11,7 @@ const PONTOS_DE_ENTRADA = [
   'gerarRecorrenciasEFaturas',
   'aplicarFormulas',
   'verificarFormulas',
+  'criarAbaDoProximoAno',
   'registrarSaldos',
   'gerarAbaMigracao',
   'importarMigracao',
