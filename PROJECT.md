@@ -576,6 +576,8 @@ Cada fase tem critério de pronto. Não avançar sem cumprir.
 - Menu "Termômetro": gerar recorrências/faturas, migração (gerar/importar), verificar fórmulas, relatório de validação.
 - Migração do plano (seção 9).
 - ✅ Pronto quando: saldos de fim de mês de out/2026 a dez/2027 idênticos à planilha real, com diferenças diárias explicadas; e um lançamento digitado à mão (à vista, cartão e parcelado) aparece no bloco certo.
+- **Status (2026-10-01): cumprido na Planilha Teste**, com corte em 24/10/2026. Dos 465 dias de out/2026 a dez/2027, 457 batem centavo a centavo e 8 diferem só pela regra do dia 31. A única diferença de fim de mês é intencional: a "Receita" (R$ 254,50, parcela 8/8 em jan/2027) foi encerrada em jan/2027, enquanto o plano antigo a repetia até dez/2027. Lançamentos manuais à vista, no cartão e parcelados caíram no bloco certo, e "Verificar fórmulas" passou.
+- Pendente, fora do critério: menu "Criar aba do próximo ano" (necessário antes de jan/2027 virar o horizonte).
 
 **Fase 2 — Virada da planilha real e uso só pela planilha**
 - Backup pré-migração; repetir a Fase 1 na real no primeiro dia 24 após o pronto.
@@ -606,7 +608,7 @@ Cada fase tem critério de pronto. Não avançar sem cumprir.
 
 - [ ] Assinatura do Apple Developer Program (define o início da Fase 6).
 - [ ] Cores definitivas das categorias de receita e do tipo Estorno.
-- [ ] Data de corte efetiva (regra decidida: primeiro dia 24 após o pronto da Fase 1).
+- [ ] Data de corte efetiva (regra decidida: primeiro dia 24 após o pronto da Fase 1; Fase 1 pronta em 2026-10-01 → meta 24/10/2026).
 
 ---
 
