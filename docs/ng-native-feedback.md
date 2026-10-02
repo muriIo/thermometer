@@ -57,3 +57,27 @@ A fresh app from `@ng-native/template` (0.3.0) ships two things it never uses:
 Small one too: `AGENTS.md` and `README.md` only show `npm` commands; it would help if they said that `pnpm`/`yarn`/`bun` equivalents work, or used `npx expo ...` for the Expo ones.
 
 </details>
+
+### 2026-10-02 — `SecureStorage` não tem leitura que se possa aguardar
+
+- **Versões:** ng-native 0.3.0 · Angular 22.2.1 · Expo SDK 57 (expo-secure-store 57.0.4)
+- **Tipo:** limitação
+- **O que tentei:** implementar uma porta `lerToken(): Promise<string | null>` sobre `SecureStorage` (`@ng-native/expo/secure-store`), fora de um template, para o núcleo do app saber se já existe token antes de decidir entre a tela de primeiro acesso e a Hoje.
+- **O que esperava:** um `get(key)` que devolve promessa, ou acesso ao `NativeStore` por baixo do `SecureStorage`.
+- **O que aconteceu:** `Store` só expõe `signal(key, initial)`, `ready` (signal), `remove` e `flush`. Esperar a leitura exige observar `ready` com `effect`/`toObservable`, o que pede contexto de injeção dentro de uma classe que não é Angular. O `NativeStore` (que tem `get`) existe na tipagem, mas o `SecureStorage` é um `InjectionToken<Store>` sem expor a fonte.
+- **Reprodução mínima:** tentar escrever `async function lerToken(store: Store): Promise<string | null>` sem `inject()`.
+- **Contorno adotado:** `apps/mobile/src/infra/cofre-seguro.ts` usa `expo-secure-store` direto (`getItemAsync`/`setItemAsync`), recebido por parâmetro em `portas-do-aparelho.ts`. Perde o `MissingModuleError` do ng-native.
+- **Issue upstream:** rascunho abaixo
+
+<details><summary>Rascunho da issue</summary>
+
+**Título:** `Store`: add an awaitable read (`get(key): Promise<T | null>`) or expose the `NativeStore`
+
+**Descrição:**
+
+`Store` (behind `Storage` and `SecureStorage`) is great for binding a value to a template, but code outside a component that just needs to read a value once has no clean way to await it. The options today are observing `ready` through `effect`/`toObservable` (which needs an injection context) or relying on `SecureStorage` answering synchronously.
+
+A small `get<T>(key): Promise<T | null>` on `Store` (same JSON parsing and error handling as `signal`) would cover it, or a way to reach the `NativeStore` behind `SecureStorage`. Use case: an offline-first app whose core is framework-free and receives a `TokenStore` port at composition time.
+
+</details>
+

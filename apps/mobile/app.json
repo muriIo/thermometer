@@ -20,6 +20,6 @@
     "updates": {
       "enabled": false
     },
-    "plugins": ["@ng-native/metro"]
+    "plugins": ["@ng-native/metro", "expo-sqlite", "expo-secure-store"]
   }
 }

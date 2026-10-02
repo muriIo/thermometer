@@ -2,16 +2,36 @@
 // structuredClone. Metro runs it before this file only when something imports it, and nothing
 // else does in a release build, which would then get React Native's fetch, with no body.
 import 'expo';
+import { inject } from '@angular/core';
 import { currentConditions, deviceTokens, watchConditions } from '@ng-native/device';
+import { Crypto } from '@ng-native/expo/crypto';
 import { getFabricUIManager, registerPlatformComponents } from '@ng-native/fabric';
 import { mount } from '@ng-native/platform';
 import { AppRegistry, Image, Platform, processColor } from 'react-native';
+import { Termometro } from './aplicacao/termometro.ts';
+import { portasDoAparelho } from './infra/portas-do-aparelho.ts';
 import { App } from './ui/app.ts';
+import { TERMOMETRO } from './ui/estado-do-app.ts';
 
 registerPlatformComponents(Platform.OS);
 
 AppRegistry.registerRunnable('main', ({ rootTag }: { rootTag: number | string }) => {
   const app = mount(Number(rootTag), App, getFabricUIManager(), {
+    // Raiz de composição: o único lugar que liga a infra ao app (apps/mobile/AGENTS.md).
+    providers: [
+      {
+        provide: TERMOMETRO,
+        useFactory: () => {
+          const crypto = inject(Crypto);
+          return new Termometro(
+            portasDoAparelho({
+              url: process.env.EXPO_PUBLIC_API_URL ?? '',
+              novoId: () => crypto.randomUUID(),
+            }),
+          );
+        },
+      },
+    ],
     // Colours, as the integers the platform wants.
     processColor,
     // What `@media` resolves against. Without it every media query is false and a responsive

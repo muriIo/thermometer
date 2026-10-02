@@ -214,6 +214,9 @@ importers:
       '@ng-native/device':
         specifier: 0.3.0
         version: 0.3.0(@angular/core@22.2.1(@angular/compiler@22.2.1)(rxjs@7.8.2))(react-native@0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0))
+      '@ng-native/expo':
+        specifier: 0.3.0
+        version: 0.3.0(8dec4587d70f6cdba2fb4029bd894c57)
       '@ng-native/fabric':
         specifier: 0.3.0
         version: 0.3.0
@@ -232,6 +235,18 @@ importers:
       expo:
         specifier: 57.0.26
         version: 57.0.26(@babel/core@7.29.7(supports-color@7.2.0))(react-native@0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0))(react@19.2.3)(supports-color@7.2.0)(typescript@6.0.3)
+      expo-crypto:
+        specifier: 57.0.3
+        version: 57.0.3(expo@57.0.26(@babel/core@7.29.7(supports-color@7.2.0))(react-native@0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0))(react@19.2.3)(supports-color@7.2.0)(typescript@6.0.3))
+      expo-network:
+        specifier: 57.0.2
+        version: 57.0.2(expo@57.0.26(@babel/core@7.29.7(supports-color@7.2.0))(react-native@0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0))(react@19.2.3)(supports-color@7.2.0)(typescript@6.0.3))(react@19.2.3)
+      expo-secure-store:
+        specifier: 57.0.4
+        version: 57.0.4(expo@57.0.26(@babel/core@7.29.7(supports-color@7.2.0))(react-native@0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0))(react@19.2.3)(supports-color@7.2.0)(typescript@6.0.3))
+      expo-sqlite:
+        specifier: 57.0.3
+        version: 57.0.3(expo@57.0.26(@babel/core@7.29.7(supports-color@7.2.0))(react-native@0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0))(react@19.2.3)(supports-color@7.2.0)(typescript@6.0.3))(react-native@0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0))(react@19.2.3)
       expo-system-ui:
         specifier: 57.0.4
         version: 57.0.4(expo@57.0.26(@babel/core@7.29.7(supports-color@7.2.0))(react-native@0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0))(react@19.2.3)(supports-color@7.2.0)(typescript@6.0.3))(react-native@0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0))(supports-color@7.2.0)
@@ -1448,6 +1463,141 @@ packages:
       react-native:
         optional: true
 
+  '@ng-native/expo@0.3.0':
+    resolution: {integrity: sha512-enJbgl56+4MDi3fnFrNIboP8XEktU78E4BidTRTTs8rqfvUvSVJq3fvwNxATRCmZXD8ji6p55kReTOWKLOROrQ==}
+    peerDependencies:
+      '@angular/core': ^22.0.0
+      '@expo/ui': ^57.0.0
+      '@react-native-async-storage/async-storage': ^2.2.0 || ^3.0.0
+      expo: ^57.0.0
+      expo-apple-authentication: ^57.0.0
+      expo-application: ^57.0.0
+      expo-asset: ^57.0.0
+      expo-audio: ^57.0.0
+      expo-background-task: ^57.0.0
+      expo-battery: ^57.0.0
+      expo-brightness: ^57.0.0
+      expo-camera: ^57.0.0
+      expo-clipboard: ^57.0.0
+      expo-crypto: ^57.0.0
+      expo-device: ^57.0.0
+      expo-document-picker: ^57.0.0
+      expo-file-system: ^57.0.0
+      expo-foldables: ^0.1.0
+      expo-font: ^57.0.0
+      expo-haptics: ^57.0.0
+      expo-image-manipulator: ^57.0.0
+      expo-image-picker: ^57.0.0
+      expo-keep-awake: ^57.0.0
+      expo-local-authentication: ^57.0.0
+      expo-local-llm: ^0.6.0
+      expo-localization: ^57.0.0
+      expo-location: ^57.0.0
+      expo-maps: ^57.0.0
+      expo-media-library: ^57.0.0
+      expo-modules-core: ^57.0.0
+      expo-network: ^57.0.0
+      expo-notifications: ^57.0.0
+      expo-screen-capture: ^57.0.0
+      expo-screen-orientation: ^57.0.0
+      expo-secure-store: ^57.0.0
+      expo-sensors: ^57.0.0
+      expo-splash-screen: ^57.0.0
+      expo-sqlite: ^57.0.0
+      expo-store-review: ^57.0.0
+      expo-tracking-transparency: ^57.0.0
+      expo-updates: ^57.0.0
+      expo-video: ^57.0.0
+      expo-web-browser: ^57.0.0
+      expo-widgets: ^57.0.0
+      react-native: '>=0.86.0'
+      react-native-watch-connectivity: ^2.0.0
+    peerDependenciesMeta:
+      '@expo/ui':
+        optional: true
+      '@react-native-async-storage/async-storage':
+        optional: true
+      expo-apple-authentication:
+        optional: true
+      expo-application:
+        optional: true
+      expo-asset:
+        optional: true
+      expo-audio:
+        optional: true
+      expo-background-task:
+        optional: true
+      expo-battery:
+        optional: true
+      expo-brightness:
+        optional: true
+      expo-camera:
+        optional: true
+      expo-clipboard:
+        optional: true
+      expo-crypto:
+        optional: true
+      expo-device:
+        optional: true
+      expo-document-picker:
+        optional: true
+      expo-file-system:
+        optional: true
+      expo-foldables:
+        optional: true
+      expo-font:
+        optional: true
+      expo-haptics:
+        optional: true
+      expo-image-manipulator:
+        optional: true
+      expo-image-picker:
+        optional: true
+      expo-keep-awake:
+        optional: true
+      expo-local-authentication:
+        optional: true
+      expo-local-llm:
+        optional: true
+      expo-localization:
+        optional: true
+      expo-location:
+        optional: true
+      expo-maps:
+        optional: true
+      expo-media-library:
+        optional: true
+      expo-network:
+        optional: true
+      expo-notifications:
+        optional: true
+      expo-screen-capture:
+        optional: true
+      expo-screen-orientation:
+        optional: true
+      expo-secure-store:
+        optional: true
+      expo-sensors:
+        optional: true
+      expo-splash-screen:
+        optional: true
+      expo-sqlite:
+        optional: true
+      expo-store-review:
+        optional: true
+      expo-tracking-transparency:
+        optional: true
+      expo-updates:
+        optional: true
+      expo-video:
+        optional: true
+      expo-web-browser:
+        optional: true
+      expo-widgets:
+        optional: true
+      react-native-watch-connectivity:
+        optional: true
+
   '@ng-native/fabric@0.3.0':
     resolution: {integrity: sha512-k2PAJ1jPOEIDQ6cnV+Y2WwbAYIVgRhGmGnW2X9IIsWecH5Sn+miZqjDCRyGXpGd7yhgTpxxuIxhD4v9Lx1gPAA==}
 
@@ -2140,6 +2290,9 @@ packages:
   ast-v8-to-istanbul@1.0.7:
     resolution: {integrity: sha512-kFL68AG6ajd8fg248zwM9GQrUWEp79gsmjum34OEXjs4yHuUMZfYKwOLW9GMmB4oNvVrj+EAGxsP7ye2UR9UlA==}
 
+  await-lock@2.2.2:
+    resolution: {integrity: sha512-aDczADvlvTGajTDjcjpJMqRkOF6Qdz3YbPZm/PyW6tKPkx2hlYBzxMhEywM/tU72HrVZjgl5VCdRuMlA7pZ8Gw==}
+
   babel-plugin-polyfill-corejs2@0.4.17:
     resolution: {integrity: sha512-aTyf30K/rqAsNwN76zYrdtx8obu0E4KoUME29B1xj+B3WxgvWkp943vYQ+z8Mv3lw9xHXMHpvSPOBxzAkIa94w==}
     peerDependencies:
@@ -2664,6 +2817,11 @@ packages:
       expo: '*'
       react-native: '*'
 
+  expo-crypto@57.0.3:
+    resolution: {integrity: sha512-SAWqEfF37nc8ot7bXsVmu9AFYwQdC2kGvH/eNAHiR3bmlcf1Vv8wu9AnGKT+a90r3T8YfwMpZP4QAYlo4vCn9w==}
+    peerDependencies:
+      expo: '*'
+
   expo-file-system@57.0.7:
     resolution: {integrity: sha512-1vkZRadOsIputFDBcclqBa1pO3iXOO6iIsdqJipQWw4V5TSnWgmRTuOF7ro8IzrVue+PHbum++KCG3Tawem4cg==}
     peerDependencies:
@@ -2702,9 +2860,27 @@ packages:
     peerDependencies:
       react-native: '*'
 
+  expo-network@57.0.2:
+    resolution: {integrity: sha512-BfK1kdftZcM6o9o1FAG7/y0l6vWX0n8td0M5lwkvaMeRXZ9LkRwOi9CQXwvsMTQGQiPwtQXgwiAze13cqjt75g==}
+    peerDependencies:
+      expo: '*'
+      react: '*'
+
+  expo-secure-store@57.0.4:
+    resolution: {integrity: sha512-7zBA1RThURTXdP4w65kBzZNbcSsfArqVd+p+ETAnPRWXO8J296Qd0YaCVyRpJ0HSwlCnGdvOnqO+NgSreHsOhA==}
+    peerDependencies:
+      expo: '*'
+
   expo-server@57.0.3:
     resolution: {integrity: sha512-aK+LdKzauHSGmsOStZtyxdzv0zWssCkxTw3m4QuOhfDSJsZaMRTd9O41d8ixU/QfELTbaJ0oRNcF7JFV/7O9YQ==}
     engines: {node: '>=20.16.0'}
+
+  expo-sqlite@57.0.3:
+    resolution: {integrity: sha512-gbu9Nwm76DNpSK+MEhCjjjF3/EMyFE96IEDSlfO9jPiF4q48a7bef5EXnWVrwW8rvqCZKYAfSGqSpYNhhhpgIg==}
+    peerDependencies:
+      expo: '*'
+      react: '*'
+      react-native: '*'
 
   expo-system-ui@57.0.4:
     resolution: {integrity: sha512-z//rxQJzhTNA1PcKrUtWmrd21jAS3nEDu1b0n8B/7LTTR933OcsZYP1HnbaZifuo2ZH/h7nce2Ow61WZ1Ig2bg==}
@@ -6124,6 +6300,23 @@ snapshots:
     optionalDependencies:
       react-native: 0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0)
 
+  '@ng-native/expo@0.3.0(8dec4587d70f6cdba2fb4029bd894c57)':
+    dependencies:
+      '@angular/core': 22.2.1(@angular/compiler@22.2.1)(rxjs@7.8.2)
+      '@ng-native/fabric': 0.3.0
+      expo: 57.0.26(@babel/core@7.29.7(supports-color@7.2.0))(react-native@0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0))(react@19.2.3)(supports-color@7.2.0)(typescript@6.0.3)
+      expo-modules-core: 57.0.20(react-native@0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0))(react@19.2.3)
+      react-native: 0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0)
+    optionalDependencies:
+      expo-asset: 57.0.18(expo@57.0.26(@babel/core@7.29.7(supports-color@7.2.0))(react-native@0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0))(react@19.2.3)(supports-color@7.2.0)(typescript@6.0.3))(react-native@0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0))(react@19.2.3)(supports-color@7.2.0)(typescript@6.0.3)
+      expo-crypto: 57.0.3(expo@57.0.26(@babel/core@7.29.7(supports-color@7.2.0))(react-native@0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0))(react@19.2.3)(supports-color@7.2.0)(typescript@6.0.3))
+      expo-file-system: 57.0.7(expo@57.0.26(@babel/core@7.29.7(supports-color@7.2.0))(react-native@0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0))(react@19.2.3)(supports-color@7.2.0)(typescript@6.0.3))(react-native@0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0))
+      expo-font: 57.0.4(expo@57.0.26(@babel/core@7.29.7(supports-color@7.2.0))(react-native@0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0))(react@19.2.3)(supports-color@7.2.0)(typescript@6.0.3))(react-native@0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0))(react@19.2.3)
+      expo-keep-awake: 57.0.2(expo@57.0.26(@babel/core@7.29.7(supports-color@7.2.0))(react-native@0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0))(react@19.2.3)(supports-color@7.2.0)(typescript@6.0.3))(react@19.2.3)
+      expo-network: 57.0.2(expo@57.0.26(@babel/core@7.29.7(supports-color@7.2.0))(react-native@0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0))(react@19.2.3)(supports-color@7.2.0)(typescript@6.0.3))(react@19.2.3)
+      expo-secure-store: 57.0.4(expo@57.0.26(@babel/core@7.29.7(supports-color@7.2.0))(react-native@0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0))(react@19.2.3)(supports-color@7.2.0)(typescript@6.0.3))
+      expo-sqlite: 57.0.3(expo@57.0.26(@babel/core@7.29.7(supports-color@7.2.0))(react-native@0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0))(react@19.2.3)(supports-color@7.2.0)(typescript@6.0.3))(react-native@0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0))(react@19.2.3)
+
   '@ng-native/fabric@0.3.0': {}
 
   '@ng-native/metro@0.3.0(@expo/metro-config@57.0.12(expo@57.0.26(@babel/core@7.29.7(supports-color@7.2.0))(react-native@0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0))(react@19.2.3)(supports-color@7.2.0)(typescript@6.0.3))(supports-color@7.2.0)(typescript@6.0.3))(vite@8.3.1(@types/node@24.19.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1))':
@@ -6632,6 +6825,8 @@ snapshots:
       '@jridgewell/trace-mapping': 0.3.31
       estree-walker: 3.0.3
       js-tokens: 10.0.0
+
+  await-lock@2.2.2: {}
 
   babel-plugin-polyfill-corejs2@0.4.17(@babel/core@7.29.7(supports-color@7.2.0))(supports-color@7.2.0):
     dependencies:
@@ -7201,6 +7396,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  expo-crypto@57.0.3(expo@57.0.26(@babel/core@7.29.7(supports-color@7.2.0))(react-native@0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0))(react@19.2.3)(supports-color@7.2.0)(typescript@6.0.3)):
+    dependencies:
+      expo: 57.0.26(@babel/core@7.29.7(supports-color@7.2.0))(react-native@0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0))(react@19.2.3)(supports-color@7.2.0)(typescript@6.0.3)
+
   expo-file-system@57.0.7(expo@57.0.26(@babel/core@7.29.7(supports-color@7.2.0))(react-native@0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0))(react@19.2.3)(supports-color@7.2.0)(typescript@6.0.3))(react-native@0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0)):
     dependencies:
       expo: 57.0.26(@babel/core@7.29.7(supports-color@7.2.0))(react-native@0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0))(react@19.2.3)(supports-color@7.2.0)(typescript@6.0.3)
@@ -7240,7 +7439,23 @@ snapshots:
     dependencies:
       react-native: 0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0)
 
+  expo-network@57.0.2(expo@57.0.26(@babel/core@7.29.7(supports-color@7.2.0))(react-native@0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0))(react@19.2.3)(supports-color@7.2.0)(typescript@6.0.3))(react@19.2.3):
+    dependencies:
+      expo: 57.0.26(@babel/core@7.29.7(supports-color@7.2.0))(react-native@0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0))(react@19.2.3)(supports-color@7.2.0)(typescript@6.0.3)
+      react: 19.2.3
+
+  expo-secure-store@57.0.4(expo@57.0.26(@babel/core@7.29.7(supports-color@7.2.0))(react-native@0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0))(react@19.2.3)(supports-color@7.2.0)(typescript@6.0.3)):
+    dependencies:
+      expo: 57.0.26(@babel/core@7.29.7(supports-color@7.2.0))(react-native@0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0))(react@19.2.3)(supports-color@7.2.0)(typescript@6.0.3)
+
   expo-server@57.0.3: {}
+
+  expo-sqlite@57.0.3(expo@57.0.26(@babel/core@7.29.7(supports-color@7.2.0))(react-native@0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0))(react@19.2.3)(supports-color@7.2.0)(typescript@6.0.3))(react-native@0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0))(react@19.2.3):
+    dependencies:
+      await-lock: 2.2.2
+      expo: 57.0.26(@babel/core@7.29.7(supports-color@7.2.0))(react-native@0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0))(react@19.2.3)(supports-color@7.2.0)(typescript@6.0.3)
+      react: 19.2.3
+      react-native: 0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0)
 
   expo-system-ui@57.0.4(expo@57.0.26(@babel/core@7.29.7(supports-color@7.2.0))(react-native@0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0))(react@19.2.3)(supports-color@7.2.0)(typescript@6.0.3))(react-native@0.86.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/react@19.2.18)(react@19.2.3)(supports-color@7.2.0))(supports-color@7.2.0):
     dependencies:

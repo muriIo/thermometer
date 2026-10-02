@@ -33,7 +33,9 @@ pnpm install                 # também instala os hooks do git (lefthook)
 
 ## App no celular (Expo Go)
 
-`pnpm start` dentro de `apps/mobile` e leia o QR code no Expo Go (Android ou iPhone, mesmo Wi-Fi do computador). No iPhone, o Expo Go é o teste de iOS até a Fase 6 (`PROJECT.md`, seção 18).
+`pnpm start` dentro de `apps/mobile` e leia o QR code no Expo Go (Android ou iPhone, mesmo Wi-Fi do computador).
+
+O app fala com o Web App **de teste** (Planilha Teste). Uma vez, crie `apps/mobile/.env.local` (fora do Git) com `EXPO_PUBLIC_API_URL=<URL /exec do Web App de teste>` e reinicie o Metro. A URL vai para dentro do bundle; o token não: ele é digitado no primeiro acesso e fica no Secure storage do aparelho. No iPhone, o Expo Go é o teste de iOS até a Fase 6 (`PROJECT.md`, seção 18).
 
 **WSL2:** com `networkingMode=mirrored` no `.wslconfig`, o Metro já anuncia o IP da rede local, mas o firewall do Hyper-V bloqueia a entrada e o Expo Go dá timeout. Uma vez, num PowerShell como administrador:
 
