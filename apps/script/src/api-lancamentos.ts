@@ -3,8 +3,9 @@
  * a idempotência é por `id` e o conflito, pela `versao` (ADR 0006).
  */
 import {
+  aplicarEdicao,
   falha,
-  type LinhaNova,
+  lancamentoDaLinhaNova,
   type PayloadDe,
   type Resposta,
   type RespostaEditar,
@@ -13,7 +14,7 @@ import {
   type RespostaListar,
   sucesso,
 } from '@termometro/contract';
-import { centavos, dataISO, type Lancamento, versao } from '@termometro/dominio';
+import { alcanceDaExclusao, type Lancamento, versao } from '@termometro/dominio';
 import { type Contexto, cartoesAtivos, lerConfig, problemaParaGravar } from './api-contexto';
 import { ABAS } from './esquema';
 import { colunasDoLancamento, lancamentoSalvo, lerLancamento } from './lancamento-linha';
@@ -30,27 +31,6 @@ function lerTodos(contexto: Contexto): Lido[] {
   return lidos;
 }
 
-function daLinhaNova(linha: LinhaNova): Lancamento {
-  return {
-    id: linha.id,
-    data: dataISO(linha.data),
-    valorCentavos: centavos(linha.valorCentavos),
-    tipo: linha.tipo,
-    estorna: linha.estorna ?? '',
-    categoria: linha.categoria ?? '',
-    descricao: linha.descricao ?? '',
-    quem: linha.quem,
-    meio: linha.meio,
-    cartao: linha.cartao ?? '',
-    status: linha.status,
-    grupoId: linha.grupoId ?? '',
-    parcelaN: linha.parcelaN ?? null,
-    parcelas: linha.parcelas ?? null,
-    recorrenciaId: '',
-    excluido: false,
-  };
-}
-
 /**
  * Grava as linhas que ainda não existem. Reenvio da mesma linha (mesmo `id`)
  * devolve a que já está gravada, sem duplicar. Se alguma linha nova for
@@ -63,7 +43,7 @@ export function lancar(payload: PayloadDe<'lancar'>, contexto: Contexto): Respos
   const novas = new Map<string, Lancamento>();
   for (const [i, linha] of payload.linhas.entries()) {
     if (existentes.has(linha.id) || novas.has(linha.id)) continue;
-    const lancamento = daLinhaNova(linha);
+    const lancamento = lancamentoDaLinhaNova(linha);
     const problema = problemaParaGravar(lancamento, contexto, config, cartoes);
     if (problema) return falha('INVALID_PAYLOAD', `Linha ${i + 1}: ${problema}`);
     novas.set(linha.id, lancamento);
@@ -83,7 +63,7 @@ export function lancar(payload: PayloadDe<'lancar'>, contexto: Contexto): Respos
   const linhas = payload.linhas.map((linha) => {
     const existente = existentes.get(linha.id);
     if (existente) return lancamentoSalvo(existente.lancamento, existente.registro.dados);
-    const nova = novas.get(linha.id) ?? daLinhaNova(linha);
+    const nova = novas.get(linha.id) ?? lancamentoDaLinhaNova(linha);
     return lancamentoSalvo(nova, { ...controle, data_caixa: '', fatura_id: '' });
   });
   return sucesso({ linhas: dedupe(linhas) });
@@ -110,22 +90,7 @@ export function editar(payload: PayloadDe<'editar'>, contexto: Contexto): Respos
   const lido = exigirVersao(id, versaoVista, contexto);
   if ('ok' in lido) return lido;
 
-  const atual = lido.lancamento;
-  const editado: Lancamento = {
-    ...atual,
-    ...(campos.data === undefined ? {} : { data: dataISO(campos.data) }),
-    ...(campos.valorCentavos === undefined
-      ? {}
-      : { valorCentavos: centavos(campos.valorCentavos) }),
-    ...(campos.tipo === undefined ? {} : { tipo: campos.tipo }),
-    ...(campos.estorna === undefined ? {} : { estorna: campos.estorna }),
-    ...(campos.categoria === undefined ? {} : { categoria: campos.categoria }),
-    ...(campos.descricao === undefined ? {} : { descricao: campos.descricao }),
-    ...(campos.quem === undefined ? {} : { quem: campos.quem }),
-    ...(campos.meio === undefined ? {} : { meio: campos.meio }),
-    ...(campos.cartao === undefined ? {} : { cartao: campos.cartao }),
-    ...(campos.status === undefined ? {} : { status: campos.status }),
-  };
+  const editado = aplicarEdicao(lido.lancamento, campos);
   const problema = problemaParaGravar(
     editado,
     contexto,
@@ -140,8 +105,7 @@ export function editar(payload: PayloadDe<'editar'>, contexto: Contexto): Respos
 }
 
 /**
- * Exclusão lógica. "Esta e as próximas" alcança as parcelas seguintes do
- * grupo, menos as à vista já confirmadas, que não mudam (PROJECT.md, 5.5).
+ * Exclusão lógica do que `alcanceDaExclusao` alcança.
  */
 export function excluir(
   payload: PayloadDe<'excluir'>,
@@ -150,17 +114,18 @@ export function excluir(
   const lido = exigirVersao(payload.id, payload.versaoVista, contexto);
   if ('ok' in lido) return lido;
 
-  const alvo = lido.lancamento;
-  const proximas =
-    payload.escopo === 'esta_e_proximas' && alvo.grupoId
-      ? lerTodos(contexto).filter(({ lancamento: l }) => {
-          const depois = (l.parcelaN ?? 0) > (alvo.parcelaN ?? 0);
-          const fixa = l.meio === 'avista' && l.status === 'confirmado';
-          return l.grupoId === alvo.grupoId && depois && !l.excluido && !fixa;
-        })
-      : [];
-
-  const excluidos = [lido, ...proximas];
+  const todos = payload.escopo === 'esta_e_proximas' ? lerTodos(contexto) : [];
+  const ids = new Set(
+    alcanceDaExclusao(
+      lido.lancamento,
+      todos.map((l) => l.lancamento),
+      payload.escopo,
+    ).map((l) => l.id),
+  );
+  const excluidos = [
+    lido,
+    ...todos.filter((l) => l.lancamento.id !== lido.lancamento.id && ids.has(l.lancamento.id)),
+  ];
   for (const { registro } of excluidos) {
     contexto.planilha.atualizar(ABAS.lancamentos, registro.linha, {
       excluido: true,

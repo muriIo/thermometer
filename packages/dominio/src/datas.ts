@@ -70,6 +70,15 @@ export function somarMeses(data: DataISO, meses: number): DataISO {
   return diaDoMes(somarMesesAoMes(mesDe(data), meses), diaDe(data));
 }
 
+const MS_POR_DIA = 86_400_000;
+
+/** `dias` depois (ou antes, se negativo). Usa `Date.UTC` só como calendário, sem fuso nem "agora". */
+export function somarDias(data: DataISO, dias: number): DataISO {
+  const [ano, mes] = anoEMes(mesDe(data));
+  const alvo = new Date(Date.UTC(ano, mes - 1, diaDe(data)) + dias * MS_POR_DIA);
+  return `${alvo.getUTCFullYear().toString().padStart(4, '0')}-${dois(alvo.getUTCMonth() + 1)}-${dois(alvo.getUTCDate())}` as DataISO;
+}
+
 function anoEMes(mes: MesISO): [number, number] {
   return [Number(mes.slice(0, 4)), Number(mes.slice(5, 7))];
 }

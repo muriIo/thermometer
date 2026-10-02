@@ -1,5 +1,14 @@
 import { z } from 'zod';
-import { ACOES, type Acao } from './acoes';
+import {
+  ACOES,
+  type Acao,
+  type RespostaEditar,
+  type RespostaExcluir,
+  type RespostaLancar,
+  type RespostaListar,
+  type RespostaReferencias,
+  type RespostaResumo,
+} from './acoes';
 
 /** Versão atual do contrato. O script aceita esta e a anterior (PROJECT.md, 6.3). */
 export const VERSAO_CONTRATO = 1;
@@ -34,6 +43,18 @@ export type RespostaPing = {
   horaServidor: string;
   nome: string;
 };
+
+/** O que cada ação devolve em `data` quando dá certo. */
+type Respostas = {
+  ping: RespostaPing;
+  referencias: RespostaReferencias;
+  lancar: RespostaLancar;
+  editar: RespostaEditar;
+  excluir: RespostaExcluir;
+  listar: RespostaListar;
+  resumo: RespostaResumo;
+};
+export type RespostaDe<A extends Acao> = Respostas[A];
 
 export function sucesso<T>(data: T): Resposta<T> {
   return { ok: true, data };

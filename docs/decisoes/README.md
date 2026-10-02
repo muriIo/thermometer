@@ -11,5 +11,6 @@
 | [0007](0007-saldo-lido-da-planilha.md) | Saldo lido da planilha |
 | [0008](0008-data-de-corte-dia-24.md) | Data de corte: primeiro dia 24 após validação |
 | [0009](0009-padroes-de-engenharia.md) | Padrões de engenharia |
+| [0010](0010-espelho-fila-e-projecao.md) | Sincronização: espelho, fila e projeção |
 
 `grilling/` guarda as rodadas de perguntas e respostas de 2026-10-01 que originaram 0001–0008.

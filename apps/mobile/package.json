@@ -18,6 +18,7 @@
     "@ng-native/fabric": "0.3.0",
     "@ng-native/metro": "0.3.0",
     "@ng-native/platform": "0.3.0",
+    "@termometro/contract": "workspace:*",
     "@termometro/dominio": "workspace:*",
     "expo": "57.0.26",
     "expo-system-ui": "57.0.4",

@@ -404,8 +404,8 @@ Regra: domínio e casos de uso não importam nada do framework de UI. A regra é
 
 ### 8.3 Banco local (SQLite)
 
-- `lancamentos`: espelho da aba (centavos), com `versao` (hash) e `sync_status` (`synced` | `pending` | `error`).
-- `fila`: operações pendentes (`lancar` | `editar` | `excluir`), payload, tentativas, último erro, criado_em.
+- `espelho`: linhas como a planilha devolveu (centavos), com `versao` (hash). Nada pendente entra aqui ([ADR 0010](docs/decisoes/0010-espelho-fila-e-projecao.md)).
+- `fila`: operações pendentes (`lancar` | `editar` | `excluir`), em ordem (`seq`), payload, tentativas, último erro, travada. A situação de cada linha na tela (pendente, enviando, travada) vem da fila.
 - `referencias`: categorias, cartões, previsão, config.
 - `meta`: última sincronização, versão do contrato, nome do dono do token, último `resumo`.
 
@@ -416,7 +416,7 @@ Regra: domínio e casos de uso não importam nada do framework de UI. A regra é
 3. `lancar` é idempotente por `id`.
 4. Ao abrir e ao voltar ao primeiro plano: `listar` do mês atual (e ±3 dias para previstos) + `resumo` de hoje + `referencias`. **A planilha sempre vence**: o resultado substitui o cache, preservando itens ainda pendentes na fila.
 5. Sem rede: saldo = último `resumo` + pendentes, marcado como **"estimado"**.
-6. `CONFLICT`: recarregar o item e avisar o usuário.
+6. `CONFLICT`: recarregar o item e avisar o usuário. Antes, conferir se não é o reenvio de uma edição já aplicada (ADR 0010).
 7. **Desfazer:** se ainda na fila, remove da fila; se já enviado, `excluir`.
 
 ### 8.5 Onboarding e token
