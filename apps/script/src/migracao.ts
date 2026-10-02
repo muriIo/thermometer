@@ -57,18 +57,21 @@ export type ResultadoDaMigracao = {
 };
 
 const MAXIMO_DESCRICAO = 80;
-const SOMA_SIMPLES = /^=\s*[+-]?\s*\d+(?:\.\d+)?(?:\s*[+-]\s*\d+(?:\.\d+)?)*\s*$/;
+// `getFormulas` devolve na sintaxe da localidade: em pt-BR o decimal é vírgula
+// (`=42,69+40`). Numa soma simples não há argumentos, então a vírgula só pode ser decimal.
+const NUMERO = String.raw`\d+(?:[.,]\d+)?`;
+const SOMA_SIMPLES = new RegExp(String.raw`^=\s*[+-]?\s*${NUMERO}(?:\s*[+-]\s*${NUMERO})*\s*$`);
 const MESES_PARA_PARECER_RECORRENTE = 3;
 
-/** `=1800+120-36.6` → [1800, 120, -36.6]. `null` se não for uma soma simples. */
+/** `=1800+120-36,6` → [1800, 120, -36.6]. `null` se não for uma soma simples. */
 export function parcelasDaFormula(formula: string): number[] | null {
   if (!SOMA_SIMPLES.test(formula)) return null;
   const termos =
     formula
       .slice(1)
       .replace(/\s+/g, '')
-      .match(/[+-]?\d+(?:\.\d+)?/g) ?? [];
-  return termos.map(Number);
+      .match(new RegExp(`[+-]?${NUMERO}`, 'g')) ?? [];
+  return termos.map((termo) => Number(termo.replace(',', '.')));
 }
 
 /** Linhas não vazias da nota; ✅ marca o que já foi pago. */

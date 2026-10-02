@@ -38,10 +38,17 @@ describe('parcelasDaFormula', () => {
     expect(parcelasDaFormula('=-5')).toEqual([-5]);
   });
 
+  it('lê a vírgula decimal da sintaxe pt-BR, que é como o Sheets devolve a fórmula', () => {
+    expect(parcelasDaFormula('=42,69+40')).toEqual([42.69, 40]);
+    expect(parcelasDaFormula('=13+15,6+100 + 70+254,5')).toEqual([13, 15.6, 100, 70, 254.5]);
+    expect(parcelasDaFormula('=360,4-99,99')).toEqual([360.4, -99.99]);
+  });
+
   it('recusa o que não é soma simples', () => {
     expect(parcelasDaFormula('=30*2')).toBeNull();
     expect(parcelasDaFormula('=SUM(A1:A3)')).toBeNull();
     expect(parcelasDaFormula('')).toBeNull();
+    expect(parcelasDaFormula('=SOMA(1;2)')).toBeNull();
   });
 });
 
