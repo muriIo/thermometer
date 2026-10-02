@@ -7,3 +7,10 @@ export type Meio = (typeof MEIOS)[number];
 
 export const STATUS = ['previsto', 'confirmado'] as const;
 export type Status = (typeof STATUS)[number];
+
+export const ESTORNA = ['diario', 'saida'] as const;
+
+export const QUEM = ['Murilo', 'Thays', 'Nós dois'] as const;
+export type Quem = (typeof QUEM)[number];
+
+export const ORIGENS = ['app', 'planilha', 'recorrencia', 'migracao'] as const;
