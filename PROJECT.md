@@ -615,6 +615,7 @@ Cada fase tem critério de pronto. Não avançar sem cumprir.
 - APK `preview` no celular da Thays, apontando para a Planilha Teste; depois para a real.
 - iOS sem build próprio: o Murilo testa no iPhone pelo **Expo Go** (servidor de desenvolvimento, Planilha Teste), e o CI gera também o bundle iOS. Isso não garante o build iOS da Fase 6 (módulos fora do Expo Go, assinatura, config nativa), mas pega cedo os erros de JS e de layout que só aparecem no iOS.
 - ✅ Pronto quando: lançar em modo avião, voltar a rede e o lançamento aparecer uma única vez; e uma semana de uso real sem lançamento perdido ou duplicado.
+- **Status (2026-10-02): parte técnica pronta; semana de uso real em andamento.** Telas 0–3b, fila offline, SQLite, Secure storage, APK `preview` (EAS) e EAS Update no canal `preview`, todos apontando para a Planilha Teste. Testado nos dois celulares: APK no Android e Expo Go no iPhone. O lançamento em modo avião chegou uma única vez à planilha quando a rede voltou, e um update OTA chegou ao APK. Falta a semana de uso sem lançamento perdido ou duplicado, e apontar para a planilha real depois da virada da Fase 2 (23/10).
 
 **Fase 5 — Visão completa**
 - Mês, Detalhe do dia, Editar, Totais, Por categoria, Ajustes, diagnóstico; "Pagar fatura"; recorrências e cartões no app.
