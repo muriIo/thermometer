@@ -45,6 +45,26 @@ New-NetFirewallHyperVRule -Name "Metro-8081" -DisplayName "Metro (Expo) 8081" -D
 
 Para conferir, abra `http://<IP do computador>:8081/status` no navegador do celular: deve mostrar `packager-status:running`. Se ainda falhar, verifique a permissão de Rede Local do Expo Go (iOS) e se o Wi-Fi não isola os aparelhos (rede de convidados). Último recurso: `pnpm exec expo start --tunnel`.
 
+## APK preview (Android, EAS)
+
+O APK de teste vai para o celular da Thays por link, sem Play Store. Aponta para o Web App **de teste** até a virada (ver `PROJECT.md`, seção 11). Comandos dentro de `apps/mobile`, com `pnpm dlx eas-cli@24.9.0` (ou `eas` instalado globalmente).
+
+Uma vez por máquina e por projeto:
+
+1. `eas login` com a conta da Expo.
+2. `eas init`: cria o projeto no expo.dev e grava `extra.eas.projectId` (e `owner`) no `app.json`. Commite essa mudança.
+3. `eas env:set preview --name EXPO_PUBLIC_API_URL --value <URL /exec do Web App de teste> --visibility plaintext`. A URL fica no EAS, não no repositório; o token nunca vai para o build. O `env:set` cria ou atualiza (o antigo `env:create` está obsoleto): é o mesmo comando para trocar a URL, por exemplo na virada para o Web App de produção. Variável nova ou alterada só vale a partir do próximo build.
+
+A cada APK:
+
+1. `eas build --platform android --profile preview`. No primeiro, aceite que o EAS gere e guarde a keystore: ela assina todos os APKs seguintes, e perdê-la obriga a desinstalar o app (e perder a fila guardada no aparelho) para instalar uma versão nova.
+2. Ao terminar, o EAS mostra um link e um QR code. No Android, abra o link, baixe o APK e permita instalar de fontes desconhecidas quando o sistema pedir.
+3. No primeiro acesso, cole o token da pessoa (propriedade `TOKENS` do Web App de teste).
+
+O número do build (`versionCode`) sobe sozinho a cada build (`autoIncrement`, versão remota no EAS), então um APK novo instala por cima do anterior sem apagar os dados.
+
+`npx expo-doctor` acusa `expo-modules-core` como dependência peer ausente do `@ng-native/expo`. Com pnpm é falso positivo: o pnpm liga o peer sozinho, e instalar o pacote direto faz o próprio doctor reclamar do contrário (ver `docs/ng-native-feedback.md`).
+
 ## Apps Script
 
 Só a **Planilha Teste** durante o desenvolvimento. Nunca a real.

@@ -2,12 +2,13 @@
   "expo": {
     "name": "Termômetro",
     "slug": "termometro",
-    "version": "0.0.0",
+    "version": "0.1.0",
     "platforms": ["android", "ios"],
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "android": {
+      "package": "com.murilocruz.termometro",
       "adaptiveIcon": {
         "backgroundColor": "#F7F7F5",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -20,6 +21,15 @@
     "updates": {
       "enabled": false
     },
-    "plugins": ["@ng-native/metro", "expo-sqlite", "expo-secure-store"]
+    "plugins": ["@ng-native/metro/app.plugin.cjs", "expo-sqlite", "expo-secure-store"],
+    "ios": {
+      "bundleIdentifier": "com.murilocruz.termometro"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "0a80e20a-6a62-4ed5-bf34-cccf2a5cbfa9"
+      }
+    },
+    "owner": "muriloc"
   }
 }

@@ -572,7 +572,9 @@ Detalhes em [`docs/engenharia.md`](docs/engenharia.md). Resumo:
 
 ## 17. Distribuição
 
-- **Agora — Android (Thays e testes):** EAS Build perfil `preview` gerando **APK** com distribuição interna. Atualizações por OTA no canal `preview`.
+- **Agora — Android (Thays e testes):** EAS Build perfil `preview` gerando **APK** com distribuição interna (`apps/mobile/eas.json`; pacote `com.murilocruz.termometro`). A URL do Web App vem da variável `EXPO_PUBLIC_API_URL` do ambiente `preview` do EAS, fora do repositório. Passo a passo no README.
+- **OTA (EAS Update):** ainda não configurado (`updates.enabled: false`); entra com `expo-updates` e `runtimeVersion` antes da semana de uso real, para corrigir JS sem reinstalar o APK.
+- **iOS antes da Fase 6:** o Murilo testa pelo Expo Go (Fase 4).
 - **Depois — iOS (Murilo):** Apple Developer Program (US$ 99/ano), build EAS, TestFlight. Decisão em aberto.
 
 ---
