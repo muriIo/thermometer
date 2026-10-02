@@ -12,6 +12,8 @@ import {
 } from '@termometro/contract';
 import {
   alcanceDaExclusao,
+  CATEGORIAS_GASTO,
+  CATEGORIAS_RECEITA,
   consumoDoDiario,
   dataISO,
   type Lancamento,
@@ -92,7 +94,7 @@ export class ApiFalsa implements Api {
         return ok({ versaoScript: 'falso', horaServidor: '', nome });
       case 'referencias':
         return ok({
-          categorias: { gasto: [], receita: [] },
+          categorias: { gasto: CATEGORIAS_GASTO, receita: CATEGORIAS_RECEITA },
           cartoes: [{ id: 'INTER', nome: 'Inter', dono: 'Thays' }],
           previsao: { mes: '2026-11', diarioPorDiaCentavos: 5000 },
           limites: { valorMaximoCentavos: 10_000_000, confirmarAcimaDiarioCentavos: 20_000 },

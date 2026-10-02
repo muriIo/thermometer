@@ -480,6 +480,8 @@ Identidade: fundo `#F7F7F5`, cartões brancos com borda `#ECECE7`, tinta `#15171
 
 Requisitos de UX: alvos ≥ 44 px; contraste AA; lançar em ≤ 3 toques no caso comum; nada bloqueia esperando rede.
 
+Estado no app (2026-10-02): telas 0–3b feitas em `apps/mobile/src/ui`. Diferenças em relação ao design: o primeiro acesso pede o token (8.5) em vez de "Quem usa este celular?"; a barra inferior só tem Hoje e (+) até a Fase 5; "A confirmar" e Estorno, que o design não desenha, seguem o visual dos cartões. As fontes (Bricolage Grotesque + Figtree) ainda são as do sistema.
+
 ---
 
 ## 11. Ambientes

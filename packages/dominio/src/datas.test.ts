@@ -3,6 +3,7 @@ import {
   dataISO,
   diaDe,
   diaDoMes,
+  diasEntre,
   diasNoMes,
   mesDe,
   mesISO,
@@ -105,5 +106,13 @@ describe('somarDias', () => {
   it('volta dias com valor negativo', () => {
     expect(somarDias(dataISO('2026-11-01'), -3)).toBe('2026-10-29');
     expect(somarDias(dataISO('2027-01-01'), -1)).toBe('2026-12-31');
+  });
+});
+
+describe('diasEntre', () => {
+  it('conta dias de calendário, com sinal', () => {
+    expect(diasEntre(dataISO('2026-10-30'), dataISO('2026-11-02'))).toBe(3);
+    expect(diasEntre(dataISO('2026-11-02'), dataISO('2026-10-30'))).toBe(-3);
+    expect(diasEntre(dataISO('2028-02-28'), dataISO('2028-03-01'))).toBe(2);
   });
 });
