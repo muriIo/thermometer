@@ -1,6 +1,7 @@
 import { Component, computed, inject } from '@angular/core';
 import { SafeAreaProvider } from '@ng-native/components';
 import { StatusBar } from '@ng-native/device';
+import { Atualizacoes } from './atualizacoes.ts';
 import { EstadoDoApp } from './estado-do-app.ts';
 import { Hoje } from './hoje.ts';
 import { ICONES } from './icones.ts';
@@ -40,5 +41,7 @@ export class App {
 
   constructor() {
     inject(StatusBar).set({ style: 'dark' });
+    // Procura updates desde a abertura, inclusive no primeiro acesso.
+    inject(Atualizacoes);
   }
 }
