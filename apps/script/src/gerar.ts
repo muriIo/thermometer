@@ -54,6 +54,7 @@ export function planejarGeracao(
     faturasNovas: [],
     avisos: [],
   };
+  identificarLinhasManuais(leitura.lancamentos, agora, novoId, plano);
   gerarRecorrencias(leitura, hoje, ate, agora, novoId, plano);
   gerarFaturas(leitura, hoje, ate, plano);
   return plano;
@@ -97,6 +98,30 @@ function gerarRecorrencias(
   }
 }
 
+/**
+ * Linha digitada à mão chega sem `id`/`origem`; o script atribui na primeira
+ * leitura, dentro do lock (PROJECT.md, 5.1).
+ */
+function identificarLinhasManuais(
+  lancamentos: Tabela,
+  agora: Date,
+  novoId: () => string,
+  plano: PlanoDeGeracao,
+): void {
+  for (const { linha, dados } of lancamentos.registros) {
+    if (lerTexto(dados.id) || !lerData(dados.data)) continue;
+    plano.lancamentosAlterados.push({
+      linha,
+      campos: {
+        id: novoId(),
+        origem: lerTexto(dados.origem) || 'planilha',
+        criado_em: dados.criado_em || agora,
+        atualizado_em: agora,
+      },
+    });
+  }
+}
+
 /** Uma regra válida, ou o motivo de ser ignorada. */
 function lerRegra(id: string, { dados }: Registro): Regra | string {
   const inicio = lerData(dados.inicio);
@@ -131,8 +156,10 @@ function linhasPorRegra(lancamentos: Tabela): Map<string, Existente[]> {
     const recorrenciaId = lerTexto(dados.recorrencia_id);
     const data = lerData(dados.data);
     const status = lerTexto(dados.status);
+    // Linha sem id ainda não foi organizada; recebe id nesta rodada e entra na próxima.
     if (
       !recorrenciaId ||
+      !lerTexto(dados.id) ||
       !data ||
       lerBooleano(dados.excluido) ||
       !(STATUS as readonly string[]).includes(status)

@@ -26,6 +26,7 @@ import {
   abaObrigatoria,
   acrescentar,
   acrescentarColunas,
+  aplicarValidacoes,
   atualizar,
   cabecalho,
   criarAba,
@@ -55,6 +56,7 @@ export function criarMenu(): void {
     .addItem('Aplicar fórmulas a partir do corte', 'aplicarFormulas')
     .addItem('Verificar fórmulas', 'verificarFormulas')
     .addItem('Criar aba do próximo ano', 'criarAbaDoProximoAno')
+    .addItem('Parcelar linha selecionada', 'parcelarLinhaSelecionada')
     .addSeparator()
     .addItem('Migração: registrar saldos atuais', 'registrarSaldos')
     .addItem('Migração: gerar aba Migração', 'gerarAbaMigracao')
@@ -80,6 +82,7 @@ export function prepararAbas(): void {
         destino.getRange(1, indice).setFormula(local(formulaCalculada(nome, coluna, letras)));
         proteger(destino.getRange(1, indice, destino.getMaxRows(), 1));
       }
+      aplicarValidacoes(nome);
     }
     avisar('Abas prontas.');
   });
