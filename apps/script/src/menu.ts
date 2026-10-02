@@ -1,6 +1,15 @@
 // Comandos do menu "Termômetro" (PROJECT.md, 7). Orquestram I/O; a lógica é testada à parte.
 import { type DataISO, horizonte } from '@termometro/dominio';
-import { anosAPartirDe, avisar, comLock, dataDeCorte, dataDeHoje, gravarConfig } from './contexto';
+import {
+  ABA_VALIDACAO,
+  anosAPartirDe,
+  avisar,
+  comLock,
+  confirmar,
+  dataDeCorte,
+  dataDeHoje,
+  gravarConfig,
+} from './contexto';
 import { ABAS, definicao, planejarEstrutura } from './esquema';
 import {
   celulasDoDia,
@@ -12,6 +21,7 @@ import {
 } from './formulas';
 import { planejarGeracao } from './gerar';
 import {
+  aba,
   abaObrigatoria,
   acrescentar,
   acrescentarColunas,
@@ -114,6 +124,16 @@ export function gerarRecorrenciasEFaturas(): void {
 export function aplicarFormulas(): void {
   comLock(() => {
     const corte = dataDeCorte();
+    const saldosRegistrados = (aba(ABA_VALIDACAO)?.getLastRow() ?? 0) > 1;
+    if (
+      !saldosRegistrados &&
+      !confirmar(
+        `Os saldos ainda não foram registrados (aba ${ABA_VALIDACAO}). Depois das fórmulas, ` +
+          `os valores de ${corte} em diante somem e a validação fica impossível. Aplicar mesmo assim?`,
+      )
+    ) {
+      return;
+    }
     const letras = letrasAtuais();
     for (const ano of anosAPartirDe(corte)) {
       const destino = abaObrigatoria(String(ano));

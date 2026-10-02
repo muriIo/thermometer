@@ -7,6 +7,14 @@ import { lerData, lerTexto } from './tabela';
 
 const FUSO = 'America/Sao_Paulo';
 
+/** Aba com os saldos fotografados antes das fórmulas (PROJECT.md, 9). */
+export const ABA_VALIDACAO = 'Validação';
+
+export function confirmar(pergunta: string): boolean {
+  const ui = SpreadsheetApp.getUi();
+  return ui.alert(pergunta, ui.ButtonSet.YES_NO) === ui.Button.YES;
+}
+
 export function comLock(acao: () => void): void {
   const permissao = PropertiesService.getScriptProperties().getProperty('PERMITIR_PLANILHA_REAL');
   if (!podeEscrever(planilha().getId(), permissao)) {
@@ -47,6 +55,9 @@ export function gravarConfig(chave: string, valor: DataISO): void {
 export function dataDeCorte(): DataISO {
   const corte = lerData(config('data_corte'));
   if (!corte) throw new Error('Preencha Config!data_corte (um dia 24) antes.');
+  // ADR 0008: o corte cai logo depois do fechamento do Inter.
+  if (!corte.endsWith('-24'))
+    throw new Error(`Config!data_corte precisa ser um dia 24; está ${corte}.`);
   return corte;
 }
 

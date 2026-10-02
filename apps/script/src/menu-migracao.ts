@@ -1,6 +1,13 @@
 // Comandos de migração e validação (PROJECT.md, 9). A lógica está em migracao.ts e validacao.ts.
 import { type DataISO, diaDoMes, mesISO } from '@termometro/dominio';
-import { anosAPartirDe, avisar, comLock, dataDeCorte } from './contexto';
+import {
+  anosAPartirDe,
+  avisar,
+  comLock,
+  confirmar,
+  dataDeCorte,
+  ABA_VALIDACAO as VALIDACAO,
+} from './contexto';
 import { ABAS } from './esquema';
 import { celulasDoDia } from './formulas';
 import {
@@ -15,7 +22,6 @@ import { lerTabela, lerTexto, letraDaColuna } from './tabela';
 import { COLUNAS_VALIDACAO, compararSaldos, resumir, type SaldoDoDia } from './validacao';
 
 const MIGRACAO = 'Migração';
-const VALIDACAO = 'Validação';
 const COLUNAS_DO_BLOCO: readonly ColunaDoBloco[] = ['entrada', 'saida', 'diario'];
 
 /** Lê as células futuras do plano e escreve a aba Migração para revisão. */
@@ -181,9 +187,4 @@ function saldosAtuais(corte: DataISO): SaldoAtual[] {
     }
   }
   return saldos;
-}
-
-function confirmar(pergunta: string): boolean {
-  const ui = SpreadsheetApp.getUi();
-  return ui.alert(pergunta, ui.ButtonSet.YES_NO) === ui.Button.YES;
 }
