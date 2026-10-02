@@ -53,7 +53,7 @@ Uma vez por máquina e por projeto:
 
 1. `eas login` com a conta da Expo.
 2. `eas init`: cria o projeto no expo.dev e grava `extra.eas.projectId` (e `owner`) no `app.json`. Commite essa mudança.
-3. `eas env:create --environment preview --name EXPO_PUBLIC_API_URL --value <URL /exec do Web App de teste> --visibility plaintext`. A URL fica no EAS, não no repositório; o token nunca vai para o build.
+3. `eas env:set preview --name EXPO_PUBLIC_API_URL --value <URL /exec do Web App de teste> --visibility plaintext`. A URL fica no EAS, não no repositório; o token nunca vai para o build. O `env:set` cria ou atualiza (o antigo `env:create` está obsoleto): é o mesmo comando para trocar a URL, por exemplo na virada para o Web App de produção. Variável nova ou alterada só vale a partir do próximo build.
 
 A cada APK:
 
