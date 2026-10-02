@@ -41,6 +41,8 @@ Só a **Planilha Teste** durante o desenvolvimento. Nunca a real.
 6. Primeira publicação: *Implantar → Nova implantação → App da Web* (executar como você, acesso: qualquer pessoa). Guarde o ID da implantação.
 7. **Toda mudança depois:** `push` e então `pnpm --filter @termometro/script exec clasp deploy -i <idDaImplantacao>`. Sem isso, a URL continua servindo o código antigo.
 
+**Planilha real** (só a partir da virada da Fase 2, ver [`docs/virada-fase-2.md`](docs/virada-fase-2.md)): o projeto Apps Script preso à planilha real tem seu próprio `apps/script/.clasp.real.json` (copie de `.clasp.real.json.example`) e é enviado com `pnpm --filter @termometro/script push:real`. A escrita só é liberada com a propriedade do script `PERMITIR_PLANILHA_REAL` = `sim` naquele projeto.
+
 Teste rápido:
 
 ```sh

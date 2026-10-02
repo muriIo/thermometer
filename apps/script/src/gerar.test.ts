@@ -234,6 +234,30 @@ describe('planejarGeracao: recorrências', () => {
   });
 });
 
+describe('planejarGeracao: linhas manuais', () => {
+  it('linha digitada sem id ganha id e origem planilha; linha vazia ou sem data é ignorada', () => {
+    const plano = planejarGeracao(
+      leitura({
+        lancamentos: [
+          lancamento({ data: new Date(2026, 10, 5), valor: 10, tipo: 'diario', meio: 'avista' }),
+          lancamento({ valor: 3, descricao: 'sem data' }),
+          lancamento({ id: 'ja-tem', data: new Date(2026, 10, 5), valor: 1 }),
+        ],
+      }),
+      HOJE,
+      ATE,
+      AGORA,
+      contador(),
+    );
+    expect(plano.lancamentosAlterados).toEqual([
+      {
+        linha: 2,
+        campos: { id: 'uuid-0', origem: 'planilha', criado_em: AGORA, atualizado_em: AGORA },
+      },
+    ]);
+  });
+});
+
 describe('planejarGeracao: faturas', () => {
   const INTER = ['INTER', 'Cartão Murilo (Inter)', 'Murilo', 24, 1, 6600, true];
 

@@ -12,6 +12,7 @@ const PONTOS_DE_ENTRADA = [
   'aplicarFormulas',
   'verificarFormulas',
   'criarAbaDoProximoAno',
+  'parcelarLinhaSelecionada',
   'registrarSaldos',
   'gerarAbaMigracao',
   'importarMigracao',

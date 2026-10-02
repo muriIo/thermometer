@@ -1,5 +1,12 @@
 // I/O com SpreadsheetApp. Fino de propósito: decisões ficam nos módulos testados.
-import { DEFINICOES, definicao, type NomeAba } from './esquema';
+import {
+  ABAS,
+  DEFINICOES,
+  definicao,
+  type NomeAba,
+  type RegraDeValidacao,
+  validacoes,
+} from './esquema';
 import type { Letras } from './formulas';
 import {
   lerTabela,
@@ -105,7 +112,10 @@ function ultimaLinhaComDados(
   const valores = destino.getDataRange().getValues();
   for (let linha = valores.length; linha > 1; linha--) {
     const celulas = valores[linha - 1] ?? [];
-    if (colunas.some((nome, i) => !calculadas.includes(nome) && celulas[i] !== '')) return linha;
+    // Caixa de seleção desmarcada (FALSE) não conta como dado.
+    const preenchida = (valor: unknown) => valor !== '' && valor !== false;
+    if (colunas.some((nome, i) => !calculadas.includes(nome) && preenchida(celulas[i])))
+      return linha;
   }
   return 1;
 }
@@ -178,3 +188,32 @@ export function proteger(intervalo: GoogleAppsScript.Spreadsheet.Range): void {
 }
 
 export const TODAS_AS_ABAS: readonly NomeAba[] = DEFINICOES.map((def) => def.nome);
+
+/** Listas suspensas e caixas de seleção da aba (ver `validacoes`). */
+export function aplicarValidacoes(nome: NomeAba): void {
+  const destino = abaObrigatoria(nome);
+  const colunas = cabecalho(nome) ?? [];
+  for (const [coluna, regra] of validacoes(nome)) {
+    const indice = colunas.indexOf(coluna);
+    if (indice < 0) continue;
+    destino
+      .getRange(2, indice + 1, destino.getMaxRows() - 1, 1)
+      .setDataValidation(construirValidacao(regra));
+  }
+}
+
+function construirValidacao(regra: RegraDeValidacao): GoogleAppsScript.Spreadsheet.DataValidation {
+  const nova = SpreadsheetApp.newDataValidation().setAllowInvalid(true);
+  switch (regra.tipo) {
+    case 'lista':
+      return nova.requireValueInList([...regra.valores], true).build();
+    case 'cartoes': {
+      const letra = letraDaColuna((cabecalho(ABAS.cartoes) ?? []).indexOf('id'));
+      return nova
+        .requireValueInRange(abaObrigatoria(ABAS.cartoes).getRange(`${letra}2:${letra}`), true)
+        .build();
+    }
+    case 'caixa':
+      return nova.requireCheckbox().build();
+  }
+}

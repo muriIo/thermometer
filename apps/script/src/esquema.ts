@@ -1,3 +1,13 @@
+import {
+  ESTORNA,
+  MEIOS,
+  nomesDeCategorias,
+  ORIGENS,
+  QUEM,
+  STATUS,
+  TIPOS,
+} from '@termometro/dominio';
+
 /**
  * Abas novas da planilha (PROJECT.md, 5.1–5.2). A ordem das colunas é a da
  * criação; depois disso o script só acrescenta no fim e lê pelo cabeçalho.
@@ -148,4 +158,44 @@ export function definicao(nome: NomeAba): DefinicaoAba {
   const encontrada = DEFINICOES.find((d) => d.nome === nome);
   if (!encontrada) throw new Error(`Aba sem definição: ${nome}`);
   return encontrada;
+}
+
+export type RegraDeValidacao =
+  | { readonly tipo: 'lista'; readonly valores: readonly string[] }
+  | { readonly tipo: 'cartoes' }
+  | { readonly tipo: 'caixa' };
+
+/**
+ * Listas suspensas para quem lança direto na planilha (Fase 2). Avisam, mas
+ * não bloqueiam: o script valida de novo ao ler. `ativo` de Recorrentes fica
+ * sem caixa de seleção porque vazio conta como ativa.
+ */
+export function validacoes(nome: NomeAba): ReadonlyMap<string, RegraDeValidacao> {
+  const lista = (valores: readonly string[]): RegraDeValidacao => ({ tipo: 'lista', valores });
+  const negocio: [string, RegraDeValidacao][] = [
+    ['tipo', lista(TIPOS)],
+    ['estorna', lista(ESTORNA)],
+    ['categoria', lista(nomesDeCategorias())],
+    ['quem', lista(QUEM)],
+    ['meio', lista(MEIOS)],
+    ['cartao', { tipo: 'cartoes' }],
+  ];
+  switch (nome) {
+    case ABAS.lancamentos:
+      return new Map([
+        ...negocio,
+        ['status', lista(STATUS)],
+        ['origem', lista(ORIGENS)],
+        ['excluido', { tipo: 'caixa' }],
+      ]);
+    case ABAS.recorrentes:
+      return new Map(negocio);
+    case ABAS.cartoes:
+      return new Map([
+        ['dono', lista(QUEM)],
+        ['ativo', { tipo: 'caixa' }],
+      ]);
+    default:
+      return new Map();
+  }
 }

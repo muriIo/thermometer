@@ -15,6 +15,7 @@ export {
   registrarSaldos,
   relatorioValidacao,
 } from './menu-migracao';
+export { parcelarLinhaSelecionada } from './menu-parcelar';
 
 import { criarMenu } from './menu';
 

@@ -348,8 +348,11 @@ export type ErrorCode =
   - **Gerar recorrências e faturas** até o horizonte (faturas: do mês atual até a que recebe compras do último dia do horizonte).
   - **Aplicar fórmulas a partir do corte** (`Config.data_corte`): Entrada/Saída/Diário de cada dia viram fórmula; dia inexistente fica vazio.
   - **Verificar fórmulas:** células ƒ e dos blocos que perderam ou mudaram a fórmula, e todo `fatura_id` comparado com `mesDaFatura` do domínio.
+  - **Parcelar linha selecionada:** a linha com o total e `parcelas` = N vira as N parcelas (`parcelar` do domínio); a linha mantém o `id` e vira a parcela 1.
   - **Criar aba do próximo ano:** copia o layout do último ano sem valores nem notas, liga o Saldo de 1º/jan ao de 31/dez anterior, aplica fórmulas e estende recorrências e faturas. A geração vai até o horizonte ou até o fim do último ano com aba, o que vier depois.
   - **Migração** (seção 9): registrar saldos atuais (aba `Validação`) · gerar aba `Migração` · importar aba `Migração` · relatório de validação.
+- **Listas suspensas** ("Preparar abas"): `tipo`, `estorna`, `categoria`, `quem`, `meio`, `cartao`, `status`, `origem` e `excluido` (caixa) em Lançamentos; o mesmo em Recorrentes (sem `status`/`origem`); `dono` e `ativo` em Cartões. Avisam, não bloqueiam; o script valida de novo ao ler. Categorias e listas vêm de `packages/dominio`.
+- **Linhas manuais:** "Gerar recorrências e faturas" atribui `id` e `origem = planilha` a linhas de Lançamentos sem `id`.
 - **Trava da planilha real:** os comandos que escrevem recusam a planilha real enquanto a propriedade do script `PERMITIR_PLANILHA_REAL` não for `sim` (criada só na virada da Fase 2).
 - **Fórmulas:** geradas por código em sintaxe en-US e traduzidas no separador ao gravar: `setFormula` interpreta na localidade da planilha (em pt-BR, `=SUM(1,2)` vira 1,2; nomes de função em inglês são aceitos). Usam `XLOOKUP`, `LET` e `MAP`; colunas referenciadas pelo cabeçalho atual. Excluído = critério `"<>TRUE"`, para linhas manuais com `excluido` vazio contarem.
 - **Tokens:** um por pessoa, em Propriedades do Script (`TOKENS` = `{ "<token>": "Murilo", "<token>": "Thays" }`). Nunca no código. Comparação em tempo constante. Revogar = remover a entrada.
@@ -579,6 +582,8 @@ Cada fase tem critério de pronto. Não avançar sem cumprir.
 - **Status (2026-10-01): cumprido na Planilha Teste**, com corte em 24/10/2026. Dos 465 dias de out/2026 a dez/2027, 457 batem centavo a centavo e 8 diferem só pela regra do dia 31. A única diferença de fim de mês é intencional: a "Receita" (R$ 254,50, parcela 8/8 em jan/2027) foi encerrada em jan/2027, enquanto o plano antigo a repetia até dez/2027. Lançamentos manuais à vista, no cartão e parcelados caíram no bloco certo, e "Verificar fórmulas" passou.
 
 **Fase 2 — Virada da planilha real e uso só pela planilha**
+- Roteiro: [`docs/virada-fase-2.md`](docs/virada-fase-2.md). Executar na noite de 23/10 (corte 24/10), para o Diário dos dias após o corte ainda usar a Previsão no relatório de validação.
+- Apoio no menu: listas suspensas em Lançamentos/Recorrentes/Cartões, `id`/`origem` para linhas manuais (ao gerar), "Parcelar linha selecionada", `push:real` com trava `PERMITIR_PLANILHA_REAL`.
 - Backup pré-migração; repetir a Fase 1 na real no primeiro dia 24 após o pronto.
 - 2–4 semanas lançando direto na aba Lançamentos.
 - ✅ Pronto quando: um ciclo de fatura completo fechado sem divergência e ajustes no modelo registrados.

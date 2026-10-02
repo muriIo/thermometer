@@ -1,4 +1,4 @@
-import { MEIOS, TIPOS } from '@termometro/dominio';
+import { ESTORNA, MEIOS, nomesDeCategorias, QUEM, TIPOS } from '@termometro/dominio';
 import { lerTexto } from './tabela';
 
 /** Colunas de negócio comuns a Lançamentos, Recorrentes e Migração. */
@@ -27,11 +27,15 @@ export function lerCampos(dados: Readonly<Record<string, unknown>>): CamposDeNeg
 /** Motivo para recusar os campos, ou `null` (PROJECT.md, 7: listas fechadas). */
 export function problemaNosCampos(campos: CamposDeNegocio): string | null {
   if (!incluido(TIPOS, campos.tipo)) return `tipo inválido (${campos.tipo})`;
-  if (campos.tipo === 'estorno' && !['diario', 'saida'].includes(campos.estorna)) {
+  if (campos.tipo === 'estorno' && !incluido(ESTORNA, campos.estorna)) {
     return 'estorno sem "estorna" (diario ou saida)';
   }
   if (!incluido(MEIOS, campos.meio)) return `meio inválido (${campos.meio})`;
   if (campos.meio === 'cartao' && !campos.cartao) return 'meio cartão sem cartão';
+  if (campos.quem && !incluido(QUEM, campos.quem)) return `quem inválido (${campos.quem})`;
+  if (campos.categoria && !nomesDeCategorias().includes(campos.categoria)) {
+    return `categoria inválida (${campos.categoria})`;
+  }
   return null;
 }
 
