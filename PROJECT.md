@@ -602,6 +602,7 @@ Cada fase tem critério de pronto. Não avançar sem cumprir.
 - Iniciada em 2026-10-01 na Planilha Teste, em paralelo à Fase 2 (decisão do Murilo), antes do critério da Fase 2.
 - `ping`, `referencias`, `lancar`, `editar`, `excluir`, `listar`, `resumo`, com validação, tokens, lock, idempotência, hash e proteção de fórmula.
 - ✅ Pronto quando: chamadas manuais criam lançamentos (inclusive parcelados) sem duplicar em reenvio, confirmam previsto, detectam conflito após edição manual e rejeitam token e payload inválidos.
+- **Status (2026-10-01): cumprido na Planilha Teste**, com o Web App de teste e `pnpm --filter @termometro/script chamar` (README). Os mesmos cenários rodam como testes de ponta a ponta sobre a planilha falsa em memória.
 
 **Fase 4 — App MVP (Android)**
 - Telas 0, 1, 2, 3, 3b. SQLite com fila offline, sincronização, Secure storage.
