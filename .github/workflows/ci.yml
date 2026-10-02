@@ -26,6 +26,7 @@ jobs:
       - run: pnpm dup
       - run: pnpm knip
       - run: pnpm --filter @termometro/script build
+      - run: pnpm --filter @termometro/mobile bundle
   commits:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-24.04

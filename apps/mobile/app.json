@@ -1,0 +1,25 @@
+{
+  "expo": {
+    "name": "Termômetro",
+    "slug": "termometro",
+    "version": "0.0.0",
+    "platforms": ["android", "ios"],
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#F7F7F5",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "scheme": "termometro",
+    "updates": {
+      "enabled": false
+    },
+    "plugins": ["@ng-native/metro"]
+  }
+}

@@ -29,4 +29,31 @@ Cada entrada traz um rascunho de issue. Publicar no GitHub do ng-native é decis
 
 ## Entradas
 
-_(nenhuma ainda)_
+### 2026-10-02 — Template traz dependência e config que o app não usa
+
+- **Versões:** ng-native 0.3.0 · Angular 22.2.1 · Expo SDK 57 (expo 57.0.26) · Android (ainda sem build nativo)
+- **Tipo:** DX
+- **O que tentei:** criar o app com `npx create-expo-app@latest mobile --template @ng-native/template` e passar o knip (código e dependências mortas) num monorepo pnpm.
+- **O que esperava:** só o necessário para o app de exemplo rodar.
+- **O que aconteceu:**
+  1. `expo-status-bar` vem em `dependencies`, mas nada importa esse pacote: o `StatusBar` de `@ng-native/device` fala direto com o módulo nativo (o próprio `status-bar.js` diz que não precisa do componente React). O knip acusa dependência não usada.
+  2. `app.json` traz `extra.router.root: "src/app"`, que é configuração do expo-router; o template usa `@ng-native/router` (ou nenhum router), então a chave não tem efeito.
+  3. `AGENTS.md` e `README.md` só citam `npm`, mesmo quando o projeto é criado com pnpm.
+- **Reprodução mínima:** gerar o template e rodar `npx knip`, ou `grep -r expo-status-bar src`.
+- **Contorno adotado:** removemos `expo-status-bar` e `extra.router` em `apps/mobile`, e trocamos os comandos do `AGENTS.md` por `pnpm`.
+- **Issue upstream:** rascunho abaixo
+
+<details><summary>Rascunho da issue</summary>
+
+**Título:** template: drop unused `expo-status-bar` dependency and expo-router `extra.router` key
+
+**Descrição:**
+
+A fresh app from `@ng-native/template` (0.3.0) ships two things it never uses:
+
+- `expo-status-bar` in `dependencies`. Nothing imports it; `StatusBar` from `@ng-native/device` drives the native module directly (its own source says the React component is not needed). Tools like knip flag it as unused.
+- `"extra": { "router": { "root": "src/app" } }` in `app.json`, which is expo-router configuration. The template does not use expo-router.
+
+Small one too: `AGENTS.md` and `README.md` only show `npm` commands; it would help if they said that `pnpm`/`yarn`/`bun` equivalents work, or used `npx expo ...` for the Expo ones.
+
+</details>
