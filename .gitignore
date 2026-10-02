@@ -7,3 +7,4 @@ coverage/
 # clasp: credenciais e ids por ambiente
 .clasprc.json
 .clasp.json
+.clasp.*.json
