@@ -18,5 +18,11 @@ minimumReleaseAgeExclude:
   - lefthook-windows-arm64@2.1.16
   - lefthook-windows-x64@2.1.16
   - lefthook@2.1.16
+  - '@ng-native/components@0.3.0'
+  - '@ng-native/device@0.3.0'
+  - '@ng-native/fabric@0.3.0'
+  - '@ng-native/metro@0.3.0'
+  - '@ng-native/platform@0.3.0'
+  - '@ng-native/testing@0.3.0'
 
 saveExact: true

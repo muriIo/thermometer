@@ -605,8 +605,10 @@ Cada fase tem critério de pronto. Não avançar sem cumprir.
 - **Status (2026-10-01): cumprido na Planilha Teste**, com o Web App de teste e `pnpm --filter @termometro/script chamar` (README). Os mesmos cenários rodam como testes de ponta a ponta sobre a planilha falsa em memória.
 
 **Fase 4 — App MVP (Android)**
+- Iniciada em 2026-10-02 na Planilha Teste, em paralelo à Fase 2 (decisão do Murilo), antes do critério da Fase 2.
 - Telas 0, 1, 2, 3, 3b. SQLite com fila offline, sincronização, Secure storage.
 - APK `preview` no celular da Thays, apontando para a Planilha Teste; depois para a real.
+- iOS sem build próprio: o Murilo testa no iPhone pelo **Expo Go** (servidor de desenvolvimento, Planilha Teste), e o CI gera também o bundle iOS. Isso não garante o build iOS da Fase 6 (módulos fora do Expo Go, assinatura, config nativa), mas pega cedo os erros de JS e de layout que só aparecem no iOS.
 - ✅ Pronto quando: lançar em modo avião, voltar a rede e o lançamento aparecer uma única vez; e uma semana de uso real sem lançamento perdido ou duplicado.
 
 **Fase 5 — Visão completa**

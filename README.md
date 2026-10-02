@@ -19,6 +19,8 @@ pnpm install                 # também instala os hooks do git (lefthook)
 | `pnpm format` | Formata e corrige com Biome. |
 | `pnpm test` | Testes de todos os pacotes. |
 | `pnpm --filter @termometro/script build` | Gera `apps/script/dist/` para o Apps Script. |
+| `pnpm --filter @termometro/mobile start` | Metro do app; abra no Expo Go (Android) pelo QR code. |
+| `pnpm --filter @termometro/mobile bundle` | Gera os bundles Android e iOS do Metro em `apps/mobile/dist/` (o CI roda). |
 
 ## Estrutura
 
@@ -27,7 +29,7 @@ pnpm install                 # também instala os hooks do git (lefthook)
 | `packages/dominio` | Regras puras (centavos, datas, parcelas, faturas…). Não importa nada. |
 | `packages/contract` | Contrato app ↔ script (tipos + schemas zod). |
 | `apps/script` | Apps Script em TypeScript (Web App + menu da planilha). |
-| `apps/mobile` | App Angular Native (a partir da Fase 4). |
+| `apps/mobile` | App Angular Native + Expo. Guia para agentes em [`apps/mobile/AGENTS.md`](apps/mobile/AGENTS.md). |
 
 ## Apps Script
 
