@@ -33,3 +33,7 @@ Linguagem comum entre planilha, código e conversa. Identificadores de domínio 
 | **Registrado por** | Dono do token que gravou a linha. Auditoria. |
 | **Versão** (`versao`) | Hash dos campos de negócio de uma linha, usado para detectar conflito. |
 | **Fila** | Operações do app ainda não enviadas ao script. |
+| **Espelho** | Cópia, no aparelho, das linhas como a planilha devolveu. Nunca recebe nada pendente. |
+| **Projeção** | O espelho com a fila aplicada por cima: o que a tela mostra. |
+| **Travada** | Operação que o script recusou de um jeito que reenviar não resolve. Fica visível até o usuário descartar. |
+| **Estimado** | Saldo ou consumo que soma ao último valor lido da planilha o que ela ainda não inclui (pendentes, sem rede). |
