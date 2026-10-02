@@ -43,9 +43,20 @@ Só a **Planilha Teste** durante o desenvolvimento. Nunca a real.
 
 **Planilha real** (só a partir da virada da Fase 2, ver [`docs/virada-fase-2.md`](docs/virada-fase-2.md)): o projeto Apps Script preso à planilha real tem seu próprio `apps/script/.clasp.real.json` (copie de `.clasp.real.json.example`) e é enviado com `pnpm --filter @termometro/script push:real`. A escrita só é liberada com a propriedade do script `PERMITIR_PLANILHA_REAL` = `sim` naquele projeto.
 
-Teste rápido:
+Teste rápido (só na Planilha Teste):
 
 ```sh
-curl -sL -X POST "$URL_DO_WEB_APP" -H 'Content-Type: application/json' \
-  -d '{"v":1,"token":"<token>","action":"ping","payload":null}'
+export TERMOMETRO_URL='<URL do Web App de teste>' TERMOMETRO_TOKEN='<token>'
+pnpm --filter @termometro/script chamar ping
+pnpm --filter @termometro/script chamar referencias
+pnpm --filter @termometro/script chamar listar '{"de":"2026-11-01","ate":"2026-11-30"}'
+pnpm --filter @termometro/script chamar resumo '{"data":"2026-11-05"}'
 ```
+
+Critério da Fase 3, à mão:
+
+1. `lancar` uma linha (`{"linhas":[{"id":"<uuid>","data":"…","valorCentavos":800,"tipo":"diario","quem":"Thays","meio":"avista","status":"confirmado"}]}`) duas vezes: a aba ganha **uma** linha.
+2. `lancar` um parcelado (3 linhas com o mesmo `grupoId`, `parcelaN` 1–3, `parcelas` 3, `meio` cartao, `cartao` INTER): `fatura_id` em três meses seguidos.
+3. `editar` um previsto com a `versao` devolvida e `"status":"confirmado"`: confirma.
+4. Mude o valor dessa linha à mão na planilha e repita o `editar` com a versão antiga: `CONFLICT`.
+5. Token errado: `UNAUTHORIZED`. Payload inválido (ex.: `valorCentavos` negativo): `INVALID_PAYLOAD`.
