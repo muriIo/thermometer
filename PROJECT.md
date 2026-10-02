@@ -326,6 +326,16 @@ export type ErrorCode =
 
 `LinhaNova`: `{ id, data, valorCentavos, tipo, estorna?, categoria?, descricao?, quem, meio, cartao?, status, grupoId?, parcelaN?, parcelas? }`. As parcelas são geradas no app pela mesma função de domínio que o menu da planilha usa.
 
+### 6.2.1 Detalhes de implementação
+
+- **Validação em duas camadas:** schemas zod em `packages/contract` (forma, listas fechadas, regras entre campos via `problemaNosCampos` do domínio) e, no script, o que depende da planilha: `valor ≤ Config.valor_maximo`, data em ±1 ano (parcelas até o horizonte), cartão existente e ativo.
+- **`lancar`:** tudo ou nada; uma linha inválida recusa a chamada inteira (`INVALID_PAYLOAD`, "Linha N: motivo"). `id` repetido devolve a linha gravada, sem regravar.
+- **`editar`:** parcial; campos ausentes não mudam; `estorna: ""` remove. As regras valem sobre a linha mesclada. Excluído é `NOT_FOUND`.
+- **`excluir`:** "esta e as próximas" alcança parcelas com `parcela_n` maior do mesmo `grupo_id`, menos as à vista já confirmadas.
+- **Respostas** trazem `LancamentoSalvo`: campos do lançamento em centavos + `versao`, `origem`, `registradoPor`, `faturaId` e `dataCaixa` (os dois últimos vazios logo após `lancar`, até a fórmula calcular).
+- **`resumo`:** saldo do dia, menor saldo do mês e Diário (caixa) lidos das células do bloco; consumo do Diário (termômetro), previsão, totais por tipo e gastos por categoria pela `data` (competência); `celulasSemFormula` conta Entrada/Saída/Diário do mês, a partir do corte, sem fórmula.
+- **Planilha real:** escrita pela API também exige `PERMITIR_PLANILHA_REAL` = `sim`; sem ela, `lancar`/`editar`/`excluir` respondem `INTERNAL` ("Escrita bloqueada nesta planilha").
+
 ### 6.3 Compatibilidade
 
 - O script aceita a versão atual e a anterior do contrato.
@@ -589,6 +599,7 @@ Cada fase tem critério de pronto. Não avançar sem cumprir.
 - ✅ Pronto quando: um ciclo de fatura completo fechado sem divergência e ajustes no modelo registrados.
 
 **Fase 3 — API do Apps Script**
+- Iniciada em 2026-10-01 na Planilha Teste, em paralelo à Fase 2 (decisão do Murilo), antes do critério da Fase 2.
 - `ping`, `referencias`, `lancar`, `editar`, `excluir`, `listar`, `resumo`, com validação, tokens, lock, idempotência, hash e proteção de fórmula.
 - ✅ Pronto quando: chamadas manuais criam lançamentos (inclusive parcelados) sem duplicar em reenvio, confirmam previsto, detectam conflito após edição manual e rejeitam token e payload inválidos.
 

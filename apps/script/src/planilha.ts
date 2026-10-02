@@ -68,7 +68,10 @@ export function letrasAtuais(): Letras {
 }
 
 /** Acrescenta registros no fim, escrevendo só fora das colunas ƒ. */
-export function acrescentar(nome: NomeAba, registros: readonly Record<string, unknown>[]): void {
+export function acrescentar(
+  nome: NomeAba,
+  registros: readonly Readonly<Record<string, unknown>>[],
+): void {
   if (registros.length === 0) return;
   const destino = abaObrigatoria(nome);
   const colunas = cabecalho(nome) ?? [];
@@ -88,9 +91,28 @@ export function atualizar(
   linha: number,
   campos: Readonly<Record<string, unknown>>,
 ): void {
+  escreverCampos(nome, lida.tabela.cabecalho, linha, campos, lida.valores[linha - 1] ?? []);
+}
+
+/** Como `atualizar`, lendo antes a linha atual (para quem não tem a aba lida). */
+export function atualizarLinha(
+  nome: NomeAba,
+  linha: number,
+  campos: Readonly<Record<string, unknown>>,
+): void {
+  const colunas = cabecalho(nome) ?? [];
+  const atual = abaObrigatoria(nome).getRange(linha, 1, 1, colunas.length).getValues()[0] ?? [];
+  escreverCampos(nome, colunas, linha, campos, atual);
+}
+
+function escreverCampos(
+  nome: NomeAba,
+  colunas: readonly string[],
+  linha: number,
+  campos: Readonly<Record<string, unknown>>,
+  atual: readonly unknown[],
+): void {
   const destino = abaObrigatoria(nome);
-  const colunas = lida.tabela.cabecalho;
-  const atual = lida.valores[linha - 1] ?? [];
   for (const segmento of segmentosGravaveis(colunas, definicao(nome).calculadas)) {
     const nomes = colunas.slice(segmento.inicio, segmento.fim);
     if (!nomes.some((coluna) => coluna in campos)) continue;

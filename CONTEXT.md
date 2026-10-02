@@ -21,7 +21,7 @@ Linguagem comum entre planilha, código e conversa. Identificadores de domínio 
 | **Ajuste de fatura** | Lançamento no cartão para a soma bater com o valor real da fatura. |
 | **Data** (`data`) | Dia do consumo/compra. |
 | **Data de caixa** (`data_caixa`) | Dia em que o dinheiro efetivamente sai ou entra. |
-| **Consumo** | Quanto se gastou num dia, pela data da compra, à vista + cartão; parcelado conta o total. É o que o termômetro mostra. |
+| **Consumo** | Quanto se gastou num dia, pela data da compra, à vista + cartão; parcelado conta o total. O termômetro mostra o consumo do Diário (`consumoDoDiario`), menos estornos do Diário. |
 | **Caixa** | Quanto saiu da conta num dia. É o que os blocos da planilha mostram. |
 | **Termômetro** | Comparação do consumo de hoje com a previsão do Diário (tela Hoje). |
 | **Previsão** | Valor de Diário esperado por dia, por mês (aba `Previsão`). |
