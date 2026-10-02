@@ -1,5 +1,6 @@
 // Comandos do menu "Termômetro" (PROJECT.md, 7). Orquestram I/O; a lógica é testada à parte.
-import { type DataISO, horizonte } from '@termometro/dominio';
+import type { DataISO } from '@termometro/dominio';
+import { anosComAba, fimDaGeracao } from './ano';
 import {
   ABA_VALIDACAO,
   anosAPartirDe,
@@ -42,7 +43,7 @@ import { conferirFaturaIds, conferirFormula, type Divergencia } from './verifica
 const MAXIMO_NO_ALERTA = 30;
 
 /** Fórmula en-US → sintaxe da localidade desta planilha (ver sintaxe.ts). */
-function local(formula: string): string {
+export function local(formula: string): string {
   return localizarFormula(formula, separadorDaLocalidade(planilha().getSpreadsheetLocale()));
 }
 
@@ -53,6 +54,7 @@ export function criarMenu(): void {
     .addItem('Gerar recorrências e faturas', 'gerarRecorrenciasEFaturas')
     .addItem('Aplicar fórmulas a partir do corte', 'aplicarFormulas')
     .addItem('Verificar fórmulas', 'verificarFormulas')
+    .addItem('Criar aba do próximo ano', 'criarAbaDoProximoAno')
     .addSeparator()
     .addItem('Migração: registrar saldos atuais', 'registrarSaldos')
     .addItem('Migração: gerar aba Migração', 'gerarAbaMigracao')
@@ -84,40 +86,51 @@ export function prepararAbas(): void {
 }
 
 export function gerarRecorrenciasEFaturas(): void {
-  comLock(() => {
-    const hoje = dataDeHoje();
-    const ate = horizonte(hoje);
-    const lancamentos = ler(ABAS.lancamentos);
-    const recorrentes = ler(ABAS.recorrentes);
-    const plano = planejarGeracao(
-      {
-        lancamentos: lancamentos.tabela,
-        recorrentes: recorrentes.tabela,
-        cartoes: ler(ABAS.cartoes).tabela,
-        faturas: ler(ABAS.faturas).tabela,
-      },
-      hoje,
-      ate,
-      new Date(),
-      () => Utilities.getUuid(),
-    );
-    for (const { linha, id } of plano.regrasSemId) {
-      atualizar(ABAS.recorrentes, recorrentes, linha, { id });
-    }
-    for (const { linha, campos } of plano.lancamentosAlterados) {
-      atualizar(ABAS.lancamentos, lancamentos, linha, campos);
-    }
-    acrescentar(ABAS.lancamentos, plano.lancamentosNovos);
-    acrescentar(ABAS.faturas, plano.faturasNovas);
-    gravarConfig('horizonte', ate);
-    avisar(
-      [
-        `Até ${ate}: ${plano.lancamentosNovos.length} lançamentos novos, ` +
-          `${plano.lancamentosAlterados.length} alterados, ${plano.faturasNovas.length} faturas novas.`,
-        ...plano.avisos,
-      ].join('\n'),
-    );
-  });
+  comLock(() => avisar(executarGeracao()));
+}
+
+/**
+ * Gera recorrências e faturas até o fim do horizonte ou do último ano com
+ * aba, o que vier depois. Chamar dentro do lock. Devolve o resumo.
+ */
+export function executarGeracao(): string {
+  const hoje = dataDeHoje();
+  const ate = fimDaGeracao(
+    hoje,
+    anosComAba(
+      planilha()
+        .getSheets()
+        .map((aba) => aba.getName()),
+    ),
+  );
+  const lancamentos = ler(ABAS.lancamentos);
+  const recorrentes = ler(ABAS.recorrentes);
+  const plano = planejarGeracao(
+    {
+      lancamentos: lancamentos.tabela,
+      recorrentes: recorrentes.tabela,
+      cartoes: ler(ABAS.cartoes).tabela,
+      faturas: ler(ABAS.faturas).tabela,
+    },
+    hoje,
+    ate,
+    new Date(),
+    () => Utilities.getUuid(),
+  );
+  for (const { linha, id } of plano.regrasSemId) {
+    atualizar(ABAS.recorrentes, recorrentes, linha, { id });
+  }
+  for (const { linha, campos } of plano.lancamentosAlterados) {
+    atualizar(ABAS.lancamentos, lancamentos, linha, campos);
+  }
+  acrescentar(ABAS.lancamentos, plano.lancamentosNovos);
+  acrescentar(ABAS.faturas, plano.faturasNovas);
+  gravarConfig('horizonte', ate);
+  return [
+    `Até ${ate}: ${plano.lancamentosNovos.length} lançamentos novos, ` +
+      `${plano.lancamentosAlterados.length} alterados, ${plano.faturasNovas.length} faturas novas.`,
+    ...plano.avisos,
+  ].join('\n');
 }
 
 /** Entrada/Saída/Diário viram fórmulas do corte em diante, protegidas com aviso. */
@@ -135,29 +148,32 @@ export function aplicarFormulas(): void {
       return;
     }
     const letras = letrasAtuais();
-    for (const ano of anosAPartirDe(corte)) {
-      const destino = abaObrigatoria(String(ano));
-      removerProtecoes(destino);
-      for (const [mes, dias] of porMes(diasDoAnoAPartirDe(ano, corte))) {
-        const primeira = dias[0];
-        if (!primeira) continue;
-        const formulas = dias.map(({ data }) => {
-          if (!data) return ['', '', ''];
-          const doDia = formulasDoDia(data, letras);
-          return [doDia.entrada, doDia.saida, doDia.diario];
-        });
-        const intervalo = destino.getRange(
-          primeira.celulas.linha,
-          celulasDoDia(ano, mes, 1).entrada,
-          dias.length,
-          3,
-        );
-        intervalo.clearContent().setFormulas(formulas.map((linha) => linha.map(local)));
-        proteger(intervalo);
-      }
-    }
+    for (const ano of anosAPartirDe(corte)) aplicarFormulasNoAno(ano, corte, letras);
     avisar(`Fórmulas aplicadas a partir de ${corte}.`);
   });
+}
+
+/** Fórmulas e proteções de um ano, do corte em diante. Chamar dentro do lock. */
+export function aplicarFormulasNoAno(ano: number, corte: DataISO, letras: Letras): void {
+  const destino = abaObrigatoria(String(ano));
+  removerProtecoes(destino);
+  for (const [mes, dias] of porMes(diasDoAnoAPartirDe(ano, corte))) {
+    const primeira = dias[0];
+    if (!primeira) continue;
+    const formulas = dias.map(({ data }) => {
+      if (!data) return ['', '', ''];
+      const doDia = formulasDoDia(data, letras);
+      return [doDia.entrada, doDia.saida, doDia.diario];
+    });
+    const intervalo = destino.getRange(
+      primeira.celulas.linha,
+      celulasDoDia(ano, mes, 1).entrada,
+      dias.length,
+      3,
+    );
+    intervalo.clearContent().setFormulas(formulas.map((linha) => linha.map(local)));
+    proteger(intervalo);
+  }
 }
 
 export function verificarFormulas(): void {
