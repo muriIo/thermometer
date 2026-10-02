@@ -4,7 +4,18 @@
 import { copyFile, mkdir, readFile } from 'node:fs/promises';
 import { build } from 'esbuild';
 
-const PONTOS_DE_ENTRADA = ['doPost'];
+const PONTOS_DE_ENTRADA = [
+  'doPost',
+  'onOpen',
+  'prepararAbas',
+  'gerarRecorrenciasEFaturas',
+  'aplicarFormulas',
+  'verificarFormulas',
+  'registrarSaldos',
+  'gerarAbaMigracao',
+  'importarMigracao',
+  'relatorioValidacao',
+];
 const { version } = JSON.parse(await readFile(new URL('./package.json', import.meta.url), 'utf8'));
 
 await mkdir('dist', { recursive: true });

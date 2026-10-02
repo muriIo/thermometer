@@ -179,7 +179,7 @@ Linhas digitadas à mão podem vir sem `id`/`origem`; o script atribui na primei
 | Coluna | Observação |
 |---|---|
 | `id` | `<cartao>-<AAAA-MM>` (mês do fechamento). |
-| `cartao`, `fecha_em`, `vence_em` | Datas do ciclo. |
+| `cartao`, `fecha_em`, `vence_em` | Datas do ciclo. `fecha_em` = dia `fechamento` do mês do `id`; `vence_em` = dia `vencimento` do mesmo mês, ou do mês seguinte se `vencimento ≤ fechamento` (Inter: fecha 24/10, vence 01/11). Dia inexistente = último dia do mês. |
 | `pago_em` | Vazio = não paga. **Data livre**: pagar no dia 25 ou no dia 1, tanto faz. Pagamento é sempre do total, numa data só. |
 | ƒ `data_efetiva` | `pago_em`, ou `vence_em` se vazio. |
 | ƒ `total` | Soma das compras não excluídas da fatura − estornos no cartão. |
@@ -194,13 +194,20 @@ Fatura real diferente da soma (juros, anuidade, item não lançado): lançar um 
 | `id`, `descricao`, `tipo`, `estorna`, `valor`, `categoria`, `quem`, `meio`, `cartao` | Como em Lançamentos. |
 | `dia` | 1–31. Dia que não existe no mês = último dia do mês. |
 | `inicio`, `fim` | `fim` vazio = sem fim (até o horizonte). |
-| `ativo` | |
+| `ativo` | Vazio conta como ativa; só `FALSE` desliga. Regra inválida é ignorada com aviso. |
 
-Editar uma regra "daqui para a frente" regenera só as linhas **futuras e ainda `previsto`** daquela regra. Linhas confirmadas nunca mudam. No MVP, recorrências são criadas e editadas só pela planilha (menu "Termômetro").
+Editar uma regra "daqui para a frente" regenera só as linhas **futuras e ainda `previsto`** daquela regra. Linhas confirmadas nunca mudam. Detalhes (`planejarRecorrencia` em `packages/dominio`):
+
+- Uma ocorrência por mês por regra; a linha existente é casada pelo **mês**, então mudar o `dia` atualiza a linha mantendo o `id`.
+- "Futura" = data a partir de hoje, inclusive. Mês com linha confirmada, previsto vencido ("a confirmar") ou cuja ocorrência já passou não muda.
+- Previsto futuro num mês que a regra não cobre mais (`fim` antecipado, `ativo = FALSE`) recebe `excluido = TRUE`; repetidos no mesmo mês também.
+- Rodar de novo sem mudança na regra não altera nada.
+
+No MVP, recorrências são criadas e editadas só pela planilha (menu "Termômetro").
 
 **`Previsão`** — `mes` (AAAA-MM) → `diario_por_dia` (R$). Previsão de **consumo** do Diário. Editável na planilha (e em Ajustes no app, fase 5).
 
-**`Config`** — chave/valor: `valor_maximo` (R$ 20.000), `confirmar_acima_diario` (R$ 2.000), `horizonte` (fim do ano seguinte).
+**`Config`** — chave/valor: `valor_maximo` (R$ 20.000), `confirmar_acima_diario` (R$ 2.000), `horizonte` (fim do ano seguinte; gravado pelo menu ao gerar), `data_corte` (um dia 24; a partir dele os blocos viram fórmula).
 
 ### 5.3 Categorias
 
@@ -337,11 +344,14 @@ export type ErrorCode =
 - `/** @OnlyCurrentDoc */` no topo.
 - **Web App:** executar como o dono, acesso "qualquer pessoa" (a autenticação é o token).
 - **Menu "Termômetro"** na planilha:
-  - Gerar recorrências e faturas até o horizonte.
-  - Criar aba do próximo ano (copia o layout, aplica fórmulas, estende recorrências e faturas).
-  - Migração: gerar aba `Migração` / importar aba `Migração` (seção 9).
-  - Verificar fórmulas dos blocos (lista células que perderam a fórmula).
-  - Relatório de validação (seção 9).
+  - **Preparar abas:** cria as abas/colunas que faltam (nunca remove nem reordena) e regrava as fórmulas ƒ, protegidas com aviso.
+  - **Gerar recorrências e faturas** até o horizonte (faturas: do mês atual até a que recebe compras do último dia do horizonte).
+  - **Aplicar fórmulas a partir do corte** (`Config.data_corte`): Entrada/Saída/Diário de cada dia viram fórmula; dia inexistente fica vazio.
+  - **Verificar fórmulas:** células ƒ e dos blocos que perderam ou mudaram a fórmula, e todo `fatura_id` comparado com `mesDaFatura` do domínio.
+  - Criar aba do próximo ano (copia o layout, aplica fórmulas, estende recorrências e faturas). *A fazer.*
+  - **Migração** (seção 9): registrar saldos atuais (aba `Validação`) · gerar aba `Migração` · importar aba `Migração` · relatório de validação.
+- **Trava da planilha real:** os comandos que escrevem recusam a planilha real enquanto a propriedade do script `PERMITIR_PLANILHA_REAL` não for `sim` (criada só na virada da Fase 2).
+- **Fórmulas:** geradas por código em sintaxe en-US e traduzidas no separador ao gravar: `setFormula` interpreta na localidade da planilha (em pt-BR, `=SUM(1,2)` vira 1,2; nomes de função em inglês são aceitos). Usam `XLOOKUP`, `LET` e `MAP`; colunas referenciadas pelo cabeçalho atual. Excluído = critério `"<>TRUE"`, para linhas manuais com `excluido` vazio contarem.
 - **Tokens:** um por pessoa, em Propriedades do Script (`TOKENS` = `{ "<token>": "Murilo", "<token>": "Thays" }`). Nunca no código. Comparação em tempo constante. Revogar = remover a entrada.
 - **Concorrência:** `LockService.getScriptLock()` em toda escrita e na atribuição de `id` a linhas manuais.
 - **Validação:** valor inteiro > 0 e ≤ `Config.valor_maximo`; listas fechadas para `tipo`, `estorna`, `categoria`, `meio`, `cartao`, `quem`, `status`; data dentro de ±1 ano (parcelas e recorrências podem ir até o horizonte); descrição ≤ 80.
@@ -419,6 +429,20 @@ Regra: domínio e casos de uso não importam nada do framework de UI. A regra é
 5. Aplicar as fórmulas (5.4) nos dias a partir do corte e proteger as células com aviso.
 6. **Critério de pronto da Fase 1:** o saldo do **fim de cada mês**, de out/2026 a dez/2027, idêntico ao da planilha real centavo por centavo. Diferenças em dias intermediários só podem vir da regra do dia 31; o script gera a lista para conferência.
 7. Na data de corte, repetir na planilha real.
+
+**Ordem no menu "Termômetro"** (Planilha Teste):
+
+1. Preparar abas → preencher `Cartões`, `Config.data_corte` e as regras de `Recorrentes`.
+2. Migração: registrar saldos atuais (fotografa o Saldo de cada dia a partir do mês do corte na aba `Validação`). **Antes de qualquer fórmula.**
+3. Gerar recorrências e faturas.
+4. Migração: gerar aba `Migração`. Regras do script:
+   - Entrada/Saída: uma linha por parcela da fórmula (`=1800+120+250`), pareada com a linha da nota na mesma ordem; aviso quando as quantidades diferem ou a fórmula não é uma soma simples. Parcela negativa vira Estorno da coluna. ✅ na nota → `confirmado`.
+   - Diário: o valor mais comum do mês vira a `Previsão`; o que passa dele num dia vira lançamento `diario`; abaixo dele vem desmarcado (o Diário futuro não tem como descontar).
+   - Dia 31 em mês curto (e 29–31 em fevereiro) vai para o último dia real; no Diário, o valor inteiro vira lançamento.
+   - Item igual (mês, tipo, valor) a um lançamento de recorrência já gerado vem desmarcado; descrição que aparece em 3+ meses ganha o aviso "virar recorrência?".
+5. Revisar a aba `Migração` (desmarcar, corrigir tipo/meio/cartão/categoria; a fatura logo após o corte vira compra no cartão) → Migração: importar (grava o `id` de volta, então reimportar não duplica).
+6. Aplicar fórmulas a partir do corte → Verificar fórmulas.
+7. Migração: relatório de validação — fim de mês (linha do dia 31 de cada bloco) tem de bater; diferença em dia intermediário só é aceita no último dia real de mês curto (regra do dia 31). Rodar **antes** do dia do corte: depois dele, o Diário de dias passados deixa de usar a Previsão.
 
 ---
 
@@ -552,6 +576,8 @@ Cada fase tem critério de pronto. Não avançar sem cumprir.
 - Menu "Termômetro": gerar recorrências/faturas, migração (gerar/importar), verificar fórmulas, relatório de validação.
 - Migração do plano (seção 9).
 - ✅ Pronto quando: saldos de fim de mês de out/2026 a dez/2027 idênticos à planilha real, com diferenças diárias explicadas; e um lançamento digitado à mão (à vista, cartão e parcelado) aparece no bloco certo.
+- **Status (2026-10-01): cumprido na Planilha Teste**, com corte em 24/10/2026. Dos 465 dias de out/2026 a dez/2027, 457 batem centavo a centavo e 8 diferem só pela regra do dia 31. A única diferença de fim de mês é intencional: a "Receita" (R$ 254,50, parcela 8/8 em jan/2027) foi encerrada em jan/2027, enquanto o plano antigo a repetia até dez/2027. Lançamentos manuais à vista, no cartão e parcelados caíram no bloco certo, e "Verificar fórmulas" passou.
+- Pendente, fora do critério: menu "Criar aba do próximo ano" (necessário antes de jan/2027 virar o horizonte).
 
 **Fase 2 — Virada da planilha real e uso só pela planilha**
 - Backup pré-migração; repetir a Fase 1 na real no primeiro dia 24 após o pronto.
@@ -582,7 +608,7 @@ Cada fase tem critério de pronto. Não avançar sem cumprir.
 
 - [ ] Assinatura do Apple Developer Program (define o início da Fase 6).
 - [ ] Cores definitivas das categorias de receita e do tipo Estorno.
-- [ ] Data de corte efetiva (regra decidida: primeiro dia 24 após o pronto da Fase 1).
+- [ ] Data de corte efetiva (regra decidida: primeiro dia 24 após o pronto da Fase 1; Fase 1 pronta em 2026-10-01 → meta 24/10/2026).
 
 ---
 

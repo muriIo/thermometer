@@ -15,6 +15,7 @@
     "esbuild": "0.28.2"
   },
   "dependencies": {
-    "@termometro/contract": "workspace:*"
+    "@termometro/contract": "workspace:*",
+    "@termometro/dominio": "workspace:*"
   }
 }
