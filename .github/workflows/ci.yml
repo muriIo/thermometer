@@ -40,3 +40,13 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }}
+  # Único check exigido pela proteção da main: passa só se todos os jobs acima passarem.
+  success:
+    if: always()
+    needs: [verificar, commits]
+    runs-on: ubuntu-24.04
+    steps:
+      - run: |
+          echo "verificar=${{ needs.verificar.result }} commits=${{ needs.commits.result }}"
+          test "${{ needs.verificar.result }}" = success
+          test "${{ needs.commits.result }}" = success || test "${{ needs.commits.result }}" = skipped
