@@ -13,10 +13,13 @@
   "dependencies": {
     "@angular/common": "22.2.1",
     "@angular/core": "22.2.1",
+    "@ng-icons/core": "36.1.0",
+    "@ng-icons/lucide": "36.1.0",
     "@ng-native/components": "0.3.0",
     "@ng-native/device": "0.3.0",
     "@ng-native/expo": "0.3.0",
     "@ng-native/fabric": "0.3.0",
+    "@ng-native/icons": "0.3.0",
     "@ng-native/metro": "0.3.0",
     "@ng-native/platform": "0.3.0",
     "@termometro/contract": "workspace:*",
@@ -29,7 +32,8 @@
     "expo-system-ui": "57.0.4",
     "react": "19.2.3",
     "react-native": "0.86.3",
-    "react-native-safe-area-context": "5.7.0"
+    "react-native-safe-area-context": "5.7.0",
+    "react-native-svg": "15.15.4"
   },
   "devDependencies": {
     "@angular/compiler-cli": "22.2.1",

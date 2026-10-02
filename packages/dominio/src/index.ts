@@ -9,6 +9,7 @@ export type { DataISO, MesISO } from './datas';
 export {
   dataISO,
   diaDoMes,
+  diasEntre,
   diasNoMes,
   mesDe,
   mesISO,
@@ -31,6 +32,8 @@ export type {
   Recorrencia,
 } from './recorrencia';
 export { datasDaRecorrencia, horizonte, planejarRecorrencia } from './recorrencia';
+export type { Parecido } from './sugestao';
+export { previstoParecido } from './sugestao';
 export type { CamposDeNegocio } from './validacao';
 export { MAXIMO_DESCRICAO, problemaNosCampos } from './validacao';
 export { versao } from './versao';

@@ -25,5 +25,6 @@ minimumReleaseAgeExclude:
   - '@ng-native/platform@0.3.0'
   - '@ng-native/testing@0.3.0'
   - '@ng-native/expo@0.3.0'
+  - '@ng-native/icons@0.3.0'
 
 saveExact: true
