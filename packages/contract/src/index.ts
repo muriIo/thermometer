@@ -11,7 +11,7 @@ export type {
   RespostaResumo,
 } from './acoes';
 export { ACOES, linhaNovaSchema, PAYLOADS } from './acoes';
-export type { CodigoErro, Requisicao, Resposta, RespostaPing } from './envelope';
+export type { CodigoErro, Requisicao, Resposta, RespostaDe, RespostaPing } from './envelope';
 export {
   CODIGOS_ERRO,
   falha,
@@ -20,3 +20,5 @@ export {
   VERSAO_CONTRATO,
   VERSOES_ACEITAS,
 } from './envelope';
+export type { Edicao } from './lancamento';
+export { aplicarEdicao, lancamentoDaLinhaNova } from './lancamento';

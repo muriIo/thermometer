@@ -6,6 +6,7 @@ import {
   diasNoMes,
   mesDe,
   mesISO,
+  somarDias,
   somarMeses,
   somarMesesAoMes,
 } from './datas';
@@ -90,5 +91,19 @@ describe('somarMeses', () => {
 
   it('respeita fevereiro bissexto', () => {
     expect(somarMeses(dataISO('2027-12-30'), 2)).toBe('2028-02-29');
+  });
+});
+
+describe('somarDias', () => {
+  it('atravessa fim de mês, fim de ano e fevereiro bissexto', () => {
+    expect(somarDias(dataISO('2026-10-30'), 3)).toBe('2026-11-02');
+    expect(somarDias(dataISO('2026-12-30'), 3)).toBe('2027-01-02');
+    expect(somarDias(dataISO('2028-02-28'), 1)).toBe('2028-02-29');
+    expect(somarDias(dataISO('2027-02-28'), 1)).toBe('2027-03-01');
+  });
+
+  it('volta dias com valor negativo', () => {
+    expect(somarDias(dataISO('2026-11-01'), -3)).toBe('2026-10-29');
+    expect(somarDias(dataISO('2027-01-01'), -1)).toBe('2026-12-31');
   });
 });

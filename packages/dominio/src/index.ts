@@ -1,3 +1,5 @@
+export { aConfirmar } from './a-confirmar';
+export { efeitoNoCaixa } from './caixa';
 export type { Categoria } from './categorias';
 export { CATEGORIAS_GASTO, CATEGORIAS_RECEITA, nomesDeCategorias } from './categorias';
 export type { Centavos } from './centavos';
@@ -10,9 +12,12 @@ export {
   diasNoMes,
   mesDe,
   mesISO,
+  somarDias,
   somarMeses,
   somarMesesAoMes,
 } from './datas';
+export type { EscopoDaExclusao } from './exclusao';
+export { alcanceDaExclusao, ESCOPOS_DE_EXCLUSAO } from './exclusao';
 export type { CicloDoCartao, Fatura } from './fatura';
 export { fatura, faturaId, faturasEntre, mesDaFatura } from './fatura';
 export type { Estorna, Lancamento, Meio, Quem, Status, Tipo } from './lancamento';

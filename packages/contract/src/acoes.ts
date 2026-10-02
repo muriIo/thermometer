@@ -5,6 +5,7 @@
 import {
   type Categoria,
   dataISO,
+  ESCOPOS_DE_EXCLUSAO,
   ESTORNA,
   type Lancamento,
   MEIOS,
@@ -117,7 +118,7 @@ export const PAYLOADS = {
   excluir: z.strictObject({
     id,
     versaoVista,
-    escopo: z.enum(['so_esta', 'esta_e_proximas']),
+    escopo: z.enum(ESCOPOS_DE_EXCLUSAO),
   }),
   listar: z.strictObject({ de: data, ate: data }),
   resumo: z.strictObject({ data }),
