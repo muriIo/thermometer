@@ -406,8 +406,9 @@ Regra: domínio e casos de uso não importam nada do framework de UI. A regra é
 
 - `espelho`: linhas como a planilha devolveu (centavos), com `versao` (hash). Nada pendente entra aqui ([ADR 0010](docs/decisoes/0010-espelho-fila-e-projecao.md)).
 - `fila`: operações pendentes (`lancar` | `editar` | `excluir`), em ordem (`seq`), payload, tentativas, último erro, travada. A situação de cada linha na tela (pendente, enviando, travada) vem da fila.
-- `referencias`: categorias, cartões, previsão, config.
-- `meta`: última sincronização, versão do contrato, nome do dono do token, último `resumo`.
+- `meta` (chave → JSON): `referencias` (categorias, cartões, previsão, limites), último `resumo`, nome do dono do token, última sincronização.
+- Linhas e operações ficam como JSON numa coluna, com `id`/`data`/`seq` em colunas próprias para índice e ordem: mudar um tipo do contrato não exige migração por campo.
+- Token fora do SQLite, no Secure storage.
 
 ### 8.4 Sincronização
 
