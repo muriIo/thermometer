@@ -3,8 +3,8 @@
  * a linha com o total e `parcelas` = N vira as N parcelas, pela mesma função
  * do domínio que o app vai usar (PROJECT.md, 5.5).
  */
-import { deReais, paraReais, parcelar } from '@termometro/dominio';
-import { lerCampos, problemaNosCampos } from './campos';
+import { deReais, paraReais, parcelar, problemaNosCampos } from '@termometro/dominio';
+import { lerCampos } from './campos';
 import { escreverData, lerBooleano, lerData, lerTexto, type Registro } from './tabela';
 
 export type Parcelamento = {

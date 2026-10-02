@@ -1,17 +1,7 @@
-import { ESTORNA, MEIOS, nomesDeCategorias, QUEM, TIPOS } from '@termometro/dominio';
+import type { CamposDeNegocio } from '@termometro/dominio';
 import { lerTexto } from './tabela';
 
-/** Colunas de negócio comuns a Lançamentos, Recorrentes e Migração. */
-export type CamposDeNegocio = {
-  readonly descricao: string;
-  readonly tipo: string;
-  readonly estorna: string;
-  readonly categoria: string;
-  readonly quem: string;
-  readonly meio: string;
-  readonly cartao: string;
-};
-
+/** Colunas de negócio de uma linha lida (Lançamentos, Recorrentes, Migração). */
 export function lerCampos(dados: Readonly<Record<string, unknown>>): CamposDeNegocio {
   return {
     descricao: lerTexto(dados.descricao),
@@ -22,23 +12,4 @@ export function lerCampos(dados: Readonly<Record<string, unknown>>): CamposDeNeg
     meio: lerTexto(dados.meio) || 'avista',
     cartao: lerTexto(dados.cartao),
   };
-}
-
-/** Motivo para recusar os campos, ou `null` (PROJECT.md, 7: listas fechadas). */
-export function problemaNosCampos(campos: CamposDeNegocio): string | null {
-  if (!incluido(TIPOS, campos.tipo)) return `tipo inválido (${campos.tipo})`;
-  if (campos.tipo === 'estorno' && !incluido(ESTORNA, campos.estorna)) {
-    return 'estorno sem "estorna" (diario ou saida)';
-  }
-  if (!incluido(MEIOS, campos.meio)) return `meio inválido (${campos.meio})`;
-  if (campos.meio === 'cartao' && !campos.cartao) return 'meio cartão sem cartão';
-  if (campos.quem && !incluido(QUEM, campos.quem)) return `quem inválido (${campos.quem})`;
-  if (campos.categoria && !nomesDeCategorias().includes(campos.categoria)) {
-    return `categoria inválida (${campos.categoria})`;
-  }
-  return null;
-}
-
-function incluido(lista: readonly string[], valor: string): boolean {
-  return lista.includes(valor);
 }

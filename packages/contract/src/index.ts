@@ -1,6 +1,18 @@
-export type { Acao, CodigoErro, Requisicao, Resposta, RespostaPing } from './envelope';
+export type {
+  Acao,
+  LancamentoSalvo,
+  LinhaNova,
+  PayloadDe,
+  RespostaEditar,
+  RespostaExcluir,
+  RespostaLancar,
+  RespostaListar,
+  RespostaReferencias,
+  RespostaResumo,
+} from './acoes';
+export { ACOES, linhaNovaSchema, PAYLOADS } from './acoes';
+export type { CodigoErro, Requisicao, Resposta, RespostaPing } from './envelope';
 export {
-  ACOES,
   CODIGOS_ERRO,
   falha,
   requisicaoSchema,

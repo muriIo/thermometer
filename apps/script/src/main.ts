@@ -1,5 +1,9 @@
 // Única camada que conhece o Apps Script. A lógica fica em módulos testáveis no Node.
+import { dataDeHoje } from './contexto';
+import { planilha } from './planilha';
+import { planilhaReal } from './planilha-real';
 import { rotear } from './rotear';
+import { podeEscrever } from './seguranca';
 import { lerTokens } from './tokens';
 
 export {
@@ -21,6 +25,8 @@ import { criarMenu } from './menu';
 
 declare const __VERSAO_SCRIPT__: string;
 
+const ESPERA_DO_LOCK_MS = 20_000;
+
 export function onOpen(): void {
   criarMenu();
 }
@@ -30,10 +36,26 @@ export function doPost(
 ): GoogleAppsScript.Content.TextOutput {
   let resposta: ReturnType<typeof rotear>;
   try {
+    const propriedades = PropertiesService.getScriptProperties();
     resposta = rotear(evento.postData?.contents ?? '', {
-      tokens: lerTokens(PropertiesService.getScriptProperties().getProperty('TOKENS')),
+      tokens: lerTokens(propriedades.getProperty('TOKENS')),
       versaoScript: __VERSAO_SCRIPT__,
       agora: () => new Date(),
+      hoje: dataDeHoje,
+      planilha: planilhaReal(),
+      podeEscrever: podeEscrever(
+        planilha().getId(),
+        propriedades.getProperty('PERMITIR_PLANILHA_REAL'),
+      ),
+      comLock: (acao) => {
+        const lock = LockService.getScriptLock();
+        lock.waitLock(ESPERA_DO_LOCK_MS);
+        try {
+          return acao();
+        } finally {
+          lock.releaseLock();
+        }
+      },
     });
   } catch (erro) {
     console.error(erro);

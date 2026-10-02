@@ -8,7 +8,8 @@
     "typecheck": "tsc -p tsconfig.json",
     "test": "vitest run",
     "push": "pnpm build && clasp push",
-    "push:real": "pnpm build && clasp push -P .clasp.real.json"
+    "push:real": "pnpm build && clasp push -P .clasp.real.json",
+    "chamar": "node --env-file-if-exists=.env chamar.mjs"
   },
   "devDependencies": {
     "@google/clasp": "3.4.1",
