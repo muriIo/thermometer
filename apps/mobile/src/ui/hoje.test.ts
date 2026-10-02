@@ -70,4 +70,9 @@ describe('Hoje', () => {
     await userEvent.setup().press(screen.getByRole('button', { name: 'Dispensar aviso' }));
     await waitFor(() => expect(screen.queryByText(/recusado pela planilha/)).toBeNull());
   });
+
+  it('mostra a versão do app e do JS no fim da tela', async () => {
+    await renderizarApp({ versao: 'v0.1.0 · OTA 3f2a9c1d' });
+    expect(await screen.findByText('v0.1.0 · OTA 3f2a9c1d')).toBeTruthy();
+  });
 });

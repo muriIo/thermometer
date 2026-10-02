@@ -7,11 +7,15 @@ import { currentConditions, deviceTokens, watchConditions } from '@ng-native/dev
 import { Crypto } from '@ng-native/expo/crypto';
 import { getFabricUIManager, registerPlatformComponents } from '@ng-native/fabric';
 import { mount } from '@ng-native/platform';
+import * as ExpoUpdates from 'expo-updates';
 import { AppRegistry, Image, Platform, processColor } from 'react-native';
+import configDoApp from '../app.json';
 import { Termometro } from './aplicacao/termometro.ts';
 import { portasDoAparelho } from './infra/portas-do-aparelho.ts';
+import { textoDaVersao } from './infra/versao.ts';
 import { App } from './ui/app.ts';
 import { TERMOMETRO } from './ui/estado-do-app.ts';
+import { VERSAO } from './ui/versao.ts';
 
 registerPlatformComponents(Platform.OS);
 
@@ -19,6 +23,7 @@ AppRegistry.registerRunnable('main', ({ rootTag }: { rootTag: number | string })
   const app = mount(Number(rootTag), App, getFabricUIManager(), {
     // Raiz de composição: o único lugar que liga a infra ao app (apps/mobile/AGENTS.md).
     providers: [
+      { provide: VERSAO, useValue: textoDaVersao(configDoApp.expo.version, ExpoUpdates) },
       {
         provide: TERMOMETRO,
         useFactory: () => {
