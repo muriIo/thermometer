@@ -46,7 +46,9 @@ Só a **Planilha Teste** durante o desenvolvimento. Nunca a real.
 Teste rápido (só na Planilha Teste):
 
 ```sh
-export TERMOMETRO_URL='<URL do Web App de teste>' TERMOMETRO_TOKEN='<token>'
+# uma vez: apps/script/.env (fora do Git) com
+#   TERMOMETRO_URL=<URL /exec do Web App de teste>
+#   TERMOMETRO_TOKEN=<token>
 pnpm --filter @termometro/script chamar ping
 pnpm --filter @termometro/script chamar referencias
 pnpm --filter @termometro/script chamar listar '{"de":"2026-11-01","ate":"2026-11-30"}'
