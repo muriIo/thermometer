@@ -221,6 +221,9 @@ importers:
 
   packages/contract:
     dependencies:
+      '@termometro/dominio':
+        specifier: workspace:*
+        version: link:../dominio
       zod:
         specifier: 4.6.5
         version: 4.6.5

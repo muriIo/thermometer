@@ -42,5 +42,7 @@ export function rotear(corpo: string, ambiente: Ambiente): Resposta<unknown> {
         horaServidor: ambiente.agora().toISOString(),
         nome,
       });
+    default:
+      return falha('INVALID_PAYLOAD', `Ação ${requisicao.action} ainda não implementada`);
   }
 }

@@ -7,12 +7,14 @@ import {
   type DataISO,
   deReais,
   diaDoMes,
+  MAXIMO_DESCRICAO,
   type MesISO,
   mesDe,
   mesISO,
   paraReais,
+  problemaNosCampos,
 } from '@termometro/dominio';
-import { lerCampos, problemaNosCampos } from './campos';
+import { lerCampos } from './campos';
 import { escreverData, lerBooleano, lerData, lerTexto, type Tabela } from './tabela';
 
 export const COLUNAS_MIGRACAO = [
@@ -56,7 +58,6 @@ export type ResultadoDaMigracao = {
   readonly previsoes: Previsao[];
 };
 
-const MAXIMO_DESCRICAO = 80;
 // `getFormulas` devolve na sintaxe da localidade: em pt-BR o decimal é vírgula
 // (`=42,69+40`). Numa soma simples não há argumentos, então a vírgula só pode ser decimal.
 const NUMERO = String.raw`\d+(?:[.,]\d+)?`;
@@ -310,7 +311,8 @@ export function planejarImportacao(
     if (!lerBooleano(dados.importar) || lerTexto(dados.id)) continue;
     const data = lerData(dados.data);
     const valor = Number(dados.valor);
-    const campos = lerCampos(dados);
+    const lidos = lerCampos(dados);
+    const campos = { ...lidos, descricao: lidos.descricao.slice(0, MAXIMO_DESCRICAO) };
     const status = lerTexto(dados.status) || 'previsto';
     const problema =
       (!data && 'data inválida') ||
@@ -325,7 +327,6 @@ export function planejarImportacao(
     importacao.idsGravados.push({ linha, id });
     importacao.lancamentos.push({
       ...campos,
-      descricao: campos.descricao.slice(0, MAXIMO_DESCRICAO),
       id,
       data: escreverData(data),
       valor: paraReais(deReais(valor)),

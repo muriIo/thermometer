@@ -3,6 +3,7 @@
  * plano de escrita. Sem I/O; `main.ts` aplica o plano dentro do lock.
  */
 import {
+  type CamposDeNegocio,
   type CicloDoCartao,
   type DataISO,
   deReais,
@@ -14,10 +15,11 @@ import {
   mesDe,
   paraReais,
   planejarRecorrencia,
+  problemaNosCampos,
   type Recorrencia,
   STATUS,
 } from '@termometro/dominio';
-import { type CamposDeNegocio, lerCampos, problemaNosCampos } from './campos';
+import { lerCampos } from './campos';
 import { escreverData, lerBooleano, lerData, lerTexto, type Registro, type Tabela } from './tabela';
 
 type Regra = Recorrencia & CamposDeNegocio;

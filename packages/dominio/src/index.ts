@@ -26,4 +26,6 @@ export type {
   Recorrencia,
 } from './recorrencia';
 export { datasDaRecorrencia, horizonte, planejarRecorrencia } from './recorrencia';
+export type { CamposDeNegocio } from './validacao';
+export { MAXIMO_DESCRICAO, problemaNosCampos } from './validacao';
 export { versao } from './versao';
