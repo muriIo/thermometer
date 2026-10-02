@@ -81,3 +81,26 @@ A small `get<T>(key): Promise<T | null>` on `Store` (same JSON parsing and error
 
 </details>
 
+### 2026-10-02 — Peer `expo-modules-core` do `@ng-native/expo` contradiz a orientação da Expo
+
+- **Versões:** ng-native 0.3.0 (@ng-native/expo) · Expo SDK 57 (expo 57.0.26, expo-modules-core 57.0.20) · pnpm 12.8.1
+- **Tipo:** DX | documentação
+- **O que tentei:** rodar `npx expo-doctor` antes do primeiro build no EAS, num monorepo pnpm.
+- **O que esperava:** nenhum aviso com as dependências que a documentação manda instalar.
+- **O que aconteceu:** sem `expo-modules-core` no `package.json`, o doctor diz: "Missing peer dependency: expo-modules-core. Required by: @ng-native/expo … Your app may crash outside of Expo Go". Instalando o pacote, o doctor passa a dizer: "The package "expo-modules-core" should not be installed directly in your project. You should instead use the exported API from the expo package." Não há como passar nos dois.
+- **Reprodução mínima:** app do template com `@ng-native/expo` instalado com pnpm; rodar `npx expo-doctor`, depois `npx expo install expo-modules-core` e rodar de novo.
+- **Contorno adotado:** nada instalado direto. O pnpm (`autoInstallPeers`) já liga o peer, e `require('expo-modules-core')` resolve a partir do `@ng-native/expo`. Aviso documentado no README.
+- **Issue upstream:** rascunho abaixo
+
+<details><summary>Rascunho da issue</summary>
+
+**Título:** `@ng-native/expo`: `expo-modules-core` as a required peer conflicts with Expo's "do not install directly" check
+
+**Descrição:**
+
+`@ng-native/expo` 0.3.0 declares `expo-modules-core@^57` as a required peer dependency (used by `nativeHalfMissing` in `native.js`). `expo-doctor` then reports it as a missing peer that "may crash outside of Expo Go". Installing it makes `expo-doctor` report the opposite: "expo-modules-core should not be installed directly … use the exported API from the expo package".
+
+Since `expo` always brings `expo-modules-core`, could the peer be marked optional in `peerDependenciesMeta`, or the check use `requireOptionalNativeModule` re-exported from `expo`? Either would keep `expo-doctor` clean.
+
+</details>
+
